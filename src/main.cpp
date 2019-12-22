@@ -45,9 +45,9 @@ int main() {
             2, 3, 0
     };
 
-    unsigned int vertexArrayID;
-    glGenVertexArrays(1, &vertexArrayID);
-    glBindVertexArray(vertexArrayID);
+    unsigned int vertex_array_object_id;
+    glCall(glGenVertexArrays(1, &vertex_array_object_id))
+    glCall(glBindVertexArray(vertex_array_object_id));
 
     unsigned int buffer;
     glGenBuffers(1, &buffer);
@@ -60,14 +60,14 @@ int main() {
     unsigned int ibo;
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
     int shader_program_id = glCreateProgram();
-    Shader vertex_shader("./shaders/vertex.shader", GL_VERTEX_SHADER, shader_program_id);
+    Shader vertex_shader("./res/shaders/vertex.shader", GL_VERTEX_SHADER, shader_program_id);
     vertex_shader.parseShader();
     vertex_shader.createShader();
 
-    Shader fragment_shader("./shaders/fragment.shader", GL_FRAGMENT_SHADER, shader_program_id);
+    Shader fragment_shader("./res/shaders/fragment.shader", GL_FRAGMENT_SHADER, shader_program_id);
     fragment_shader.parseShader();
     fragment_shader.createShader();
 

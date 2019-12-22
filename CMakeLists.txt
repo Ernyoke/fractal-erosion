@@ -19,6 +19,6 @@ message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
 include_directories(${GLFW_INCLUDE_DIRS}, ${OPENGL_INCLUDE_DIR}, $(GLEW_INCLUDE_DIRS))
 
-add_executable(${PROJECT_NAME} main.cpp Camera.cpp Camera.h Shader.cpp Shader.h ErrorHandling.cpp ErrorHandling.h)
+add_executable(${PROJECT_NAME} src/main.cpp src/Camera.cpp src/Camera.h src/Shader.cpp src/Shader.h src/ErrorHandling.cpp src/ErrorHandling.h)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
