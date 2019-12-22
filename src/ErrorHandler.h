@@ -2,8 +2,8 @@
 // Created by ervin on 22.12.2019.
 //
 
-#ifndef FRACTALS_ERRORHANDLING_H
-#define FRACTALS_ERRORHANDLING_H
+#ifndef FRACTALS_ERRORHANDLER_H
+#define FRACTALS_ERRORHANDLER_H
 
 #include <string>
 
@@ -18,4 +18,4 @@ namespace ErrorHandling {
 };
 
 
-#endif //FRACTALS_ERRORHANDLING_H
+#endif //FRACTALS_ERRORHANDLER_H

@@ -1,8 +1,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+
 #include "Shader.h"
-#include "ErrorHandling.h"
+#include "ErrorHandler.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 int main() {
     GLFWwindow *window;
@@ -49,18 +52,12 @@ int main() {
     glCall(glGenVertexArrays(1, &vertex_array_object_id))
     glCall(glBindVertexArray(vertex_array_object_id));
 
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6 * 2 *sizeof(float), positions, GL_STATIC_DRAW);
+    VertexBuffer vertex_buffer(positions, 4 * 2 * sizeof(unsigned int));
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    IndexBuffer index_buffer(indices, 6);
 
     int shader_program_id = glCreateProgram();
     Shader vertex_shader("./res/shaders/vertex.shader", GL_VERTEX_SHADER, shader_program_id);
@@ -84,7 +81,12 @@ int main() {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glCall(glUseProgram(shader_program_id));
         glCall(glUniform4f(location, r, 0.3f, 0.9f, 1.0f));
+
+        glCall(glBindVertexArray(vertex_array_object_id));
+        index_buffer.bind();
+
         glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         if (r > 1.0f) {

@@ -2,7 +2,7 @@
 // Created by ervin on 22.12.2019.
 //
 
-#include "ErrorHandling.h"
+#include "ErrorHandler.h"
 
 #include <GL/glew.h>
 #include <iostream>
