@@ -1,7 +1,3 @@
-//
-// Created by ervin on 22.12.2019.
-//
-
 #include "VertexBufferLayout.h"
 
 VertexBufferLayout::VertexBufferLayout() : stride{0} {

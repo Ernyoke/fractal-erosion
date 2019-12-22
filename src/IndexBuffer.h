@@ -1,7 +1,3 @@
-//
-// Created by ervin on 22.12.2019.
-//
-
 #ifndef FRACTALS_INDEXBUFFER_H
 #define FRACTALS_INDEXBUFFER_H
 

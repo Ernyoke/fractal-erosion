@@ -1,7 +1,3 @@
-//
-// Created by ervin on 22.12.2019.
-//
-
 #include "VertexBufferLayoutElement.h"
 
 #include <GL/glew.h>

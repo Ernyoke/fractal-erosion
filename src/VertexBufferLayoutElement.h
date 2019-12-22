@@ -1,7 +1,3 @@
-//
-// Created by ervin on 22.12.2019.
-//
-
 #ifndef FRACTALS_VERTEXBUFFERLAYOUTELEMENT_H
 #define FRACTALS_VERTEXBUFFERLAYOUTELEMENT_H
 
@@ -10,7 +6,7 @@ struct VertexBufferLayoutElement {
     unsigned int count;
     unsigned int normalized;
 
-    unsigned int getSizeOfType() const;
+    [[nodiscard]] unsigned int getSizeOfType() const;
 };
 
 

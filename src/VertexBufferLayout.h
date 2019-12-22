@@ -1,7 +1,3 @@
-//
-// Created by ervin on 22.12.2019.
-//
-
 #ifndef FRACTALS_VERTEXBUFFERLAYOUT_H
 #define FRACTALS_VERTEXBUFFERLAYOUT_H
 
@@ -19,11 +15,11 @@ public:
 //        static_assert(false);
     }
 
-    inline unsigned int getStride() const {
+    [[nodiscard]] inline unsigned int getStride() const {
         return stride;
     }
 
-    inline std::vector<VertexBufferLayoutElement> getElements() const {
+    [[nodiscard]] inline std::vector<VertexBufferLayoutElement> getElements() const {
         return elements;
     }
 

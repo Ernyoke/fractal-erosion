@@ -1,7 +1,3 @@
-//
-// Created by ervin on 22.12.2019.
-//
-
 #ifndef FRACTALS_SHADER_H
 #define FRACTALS_SHADER_H
 

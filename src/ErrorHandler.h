@@ -1,7 +1,3 @@
-//
-// Created by ervin on 22.12.2019.
-//
-
 #ifndef FRACTALS_ERRORHANDLER_H
 #define FRACTALS_ERRORHANDLER_H
 
@@ -14,7 +10,7 @@
 namespace ErrorHandling {
     void glClearError();
 
-    bool glLogCall(std::string function, std::string file_name, unsigned int line);
+    bool glLogCall(const std::string &function, const std::string &file_name, unsigned int line);
 };
 
 
