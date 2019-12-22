@@ -20,7 +20,7 @@ message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 include_directories(${GLFW_INCLUDE_DIRS}, ${OPENGL_INCLUDE_DIR}, $(GLEW_INCLUDE_DIRS))
 
 add_executable(${PROJECT_NAME}
-        src/main.cpp
+        src/Main.cpp
         src/Camera.cpp
         src/Camera.h
         src/Shader.cpp
