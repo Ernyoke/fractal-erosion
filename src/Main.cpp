@@ -6,6 +6,7 @@
 #include "ErrorHandler.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 int main() {
     GLFWwindow *window;
@@ -48,14 +49,13 @@ int main() {
             2, 3, 0
     };
 
-    unsigned int vertex_array_object_id;
-    glCall(glGenVertexArrays(1, &vertex_array_object_id))
-    glCall(glBindVertexArray(vertex_array_object_id));
-
+    VertexArray vertex_array;
     VertexBuffer vertex_buffer(positions, 4 * 2 * sizeof(unsigned int));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+    VertexBufferLayout vertex_buffer_layout;
+    vertex_array.bind();
+    vertex_buffer_layout.push<float>(2);
+    vertex_array.addBuffer(vertex_buffer, vertex_buffer_layout);
 
     IndexBuffer index_buffer(indices, 6);
 
@@ -84,7 +84,7 @@ int main() {
         glCall(glUseProgram(shader_program_id));
         glCall(glUniform4f(location, r, 0.3f, 0.9f, 1.0f));
 
-        glCall(glBindVertexArray(vertex_array_object_id));
+        vertex_array.bind();
         index_buffer.bind();
 
         glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
