@@ -1,0 +1,12 @@
+# CLion
+.idea
+
+# cmake
+cmake-build-debug
+
+# Binaries
+fractals
+
+# ctags
+tags
+
