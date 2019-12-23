@@ -70,11 +70,7 @@ int main() {
     fragment_shader.attachShader(shader_program);
 
     shader_program.useShaderProgram();
-
-    int location = glGetUniformLocation(shader_program.getProgramId(), "u_Color");
-    if (location >= 0) {
-        glCall(glUniform4f(location, 0.2f, 0.3f, 0.9f, 1.0f));
-    }
+    shader_program.setUniform4f("u_Color", 0.2f, 0.3f, 0.9f, 1.0f);
 
     float r = 0.0f;
     float increment = 0.05f;
@@ -83,7 +79,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader_program.useShaderProgram();
-        glCall(glUniform4f(location, r, 0.3f, 0.9f, 1.0f));
+        shader_program.setUniform4f("u_Color", r, 0.3f, 0.9f, 1.0f);
 
         vertex_array.bind();
         index_buffer.bind();

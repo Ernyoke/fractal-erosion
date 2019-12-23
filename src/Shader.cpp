@@ -32,15 +32,15 @@ void Shader::compileShader() {
     std::string source = parseShader();
     renderer_id = glCreateShader(shader_type);
     const char *src = source.c_str();
-    glShaderSource(renderer_id, 1, &src, nullptr);
-    glCompileShader(renderer_id);
+    glCall(glShaderSource(renderer_id, 1, &src, nullptr));
+    glCall(glCompileShader(renderer_id));
     int result;
-    glGetShaderiv(renderer_id, GL_COMPILE_STATUS, &result);
+    glCall(glGetShaderiv(renderer_id, GL_COMPILE_STATUS, &result));
     if (result == GL_FALSE) {
         int length;
-        glGetShaderiv(renderer_id, GL_INFO_LOG_LENGTH, &length);
+        glCall(glGetShaderiv(renderer_id, GL_INFO_LOG_LENGTH, &length));
         char *message = (char *) alloca(length * sizeof(char));
-        glGetShaderInfoLog(renderer_id, length, &length, message);
+        glCall(glGetShaderInfoLog(renderer_id, length, &length, message));
         std::cerr << "Failed to compile shader!" << std::endl;
         std::cerr << "Error: " << message << std::endl;
     }
@@ -50,8 +50,8 @@ void Shader::attachShader(const ShaderProgram &shaderProgram) {
     unsigned int shader_program_id = shaderProgram.getProgramId();
 
     if (renderer_id) {
-        glAttachShader(shader_program_id, renderer_id);
-        glLinkProgram(shader_program_id);
-        glValidateProgram(shader_program_id);
+        glCall(glAttachShader(shader_program_id, renderer_id));
+        glCall(glLinkProgram(shader_program_id));
+        glCall(glValidateProgram(shader_program_id));
     }
 }

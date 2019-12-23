@@ -15,16 +15,12 @@ public:
 
     void attachShader(const ShaderProgram &shaderProgram);
 
-    void setUniform4f(const std::string &name, float v0, float v1, float v2, float v3);
-
 private:
     std::string path;
     unsigned int shader_type;
     unsigned int renderer_id;
 
     std::string parseShader();
-
-    unsigned int getUniformLocation(const std::string &name);
 };
 
 
