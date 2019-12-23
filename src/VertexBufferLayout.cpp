@@ -3,6 +3,8 @@
 VertexBufferLayout::VertexBufferLayout() : stride{0} {
 }
 
+VertexBufferLayout::~VertexBufferLayout() = default;
+
 template<>
 void VertexBufferLayout::push<float>(unsigned int count) {
     VertexBufferLayoutElement element = {GL_FLOAT, count, GL_FALSE};

@@ -10,6 +10,8 @@ class VertexBufferLayout {
 public:
     VertexBufferLayout();
 
+    virtual ~VertexBufferLayout();
+
     template<typename T>
     void push(unsigned int count) {
 //        static_assert(false);
