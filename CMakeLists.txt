@@ -18,11 +18,27 @@ pkg_search_module(GLFW REQUIRED glfw3)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
 # glm
-find_package( glm REQUIRED )
+find_package(glm REQUIRED)
 
 include_directories(${GLFW_INCLUDE_DIRS}, ${OPENGL_INCLUDE_DIR}, $(GLEW_INCLUDE_DIRS))
 
 add_executable(${PROJECT_NAME}
+        src/libs/stb/stb_image.h
+        src/libs/stb/stb_image.cpp
+        src/libs/imgui/imconfig.h
+        src/libs/imgui/imgui.h
+        src/libs/imgui/imgui.cpp
+        src/libs/imgui/imgui_demo.cpp
+        src/libs/imgui/imgui_draw.cpp
+        src/libs/imgui/imgui_internal.h
+        src/libs/imgui/imgui_widgets.cpp
+        src/libs/imgui/imgui_impl_glfw.h
+        src/libs/imgui/imgui_impl_glfw.cpp
+        src/libs/imgui/imgui_impl_opengl3.h
+        src/libs/imgui/imgui_impl_opengl3.cpp
+        src/libs/imgui/imstb_rectpack.h
+        src/libs/imgui/imstb_textedit.h
+        src/libs/imgui/imstb_truetype.h
         src/Main.cpp
         src/Camera.cpp
         src/Camera.h
@@ -44,8 +60,6 @@ add_executable(${PROJECT_NAME}
         src/VertexBufferLayoutElement.h
         src/ShaderProgram.cpp
         src/ShaderProgram.h
-        src/libs/stb/stb_image.h
-        src/libs/stb/stb_image.cpp
         src/Texture.cpp
         src/Texture.h)
 
