@@ -1,7 +1,6 @@
 #ifndef FRACTALS_VERTEXARRAY_H
 #define FRACTALS_VERTEXARRAY_H
 
-
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 

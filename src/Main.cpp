@@ -7,6 +7,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
+#include "Renderer.h"
 
 int main() {
     GLFWwindow *window;
@@ -69,20 +70,19 @@ int main() {
     fragment_shader.compileShader();
     fragment_shader.attachShader(shader_program);
 
-    shader_program.useShaderProgram();
+    shader_program.bind();
     shader_program.setUniform4f("u_Color", 0.2f, 0.3f, 0.9f, 1.0f);
+
+    Renderer renderer;
 
     float r = 0.0f;
     float increment = 0.05f;
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.clear();
 
-        shader_program.useShaderProgram();
         shader_program.setUniform4f("u_Color", r, 0.3f, 0.9f, 1.0f);
-
-        vertex_array.bind();
-        index_buffer.bind();
+        renderer.draw(vertex_array, index_buffer, shader_program);
 
         glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 

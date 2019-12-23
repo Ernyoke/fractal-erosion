@@ -14,7 +14,7 @@ ShaderProgram::~ShaderProgram() {
     glCall(glDeleteProgram(program_id));
 }
 
-void ShaderProgram::useShaderProgram() const {
+void ShaderProgram::bind() const {
     glCall(glUseProgram(program_id));
 }
 

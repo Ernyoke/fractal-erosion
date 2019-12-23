@@ -1,4 +1,5 @@
 #include "Shader.h"
+
 #include "ErrorHandler.h"
 
 #include <fstream>
@@ -10,7 +11,8 @@
 
 Shader::Shader(std::string path, unsigned int shader_type)
         : path{std::move(path)},
-          shader_type{shader_type} {
+          shader_type{shader_type},
+          renderer_id{0} {
 }
 
 Shader::~Shader() {
