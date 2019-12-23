@@ -17,6 +17,9 @@ find_package(GLEW REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
+# glm
+find_package( glm REQUIRED )
+
 include_directories(${GLFW_INCLUDE_DIRS}, ${OPENGL_INCLUDE_DIR}, $(GLEW_INCLUDE_DIRS))
 
 add_executable(${PROJECT_NAME}
@@ -42,6 +45,8 @@ add_executable(${PROJECT_NAME}
         src/ShaderProgram.cpp
         src/ShaderProgram.h
         src/libs/stb/stb_image.h
-        src/libs/stb/stb_image.cpp src/Texture.cpp src/Texture.h)
+        src/libs/stb/stb_image.cpp
+        src/Texture.cpp
+        src/Texture.h)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})

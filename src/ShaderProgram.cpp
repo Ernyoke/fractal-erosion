@@ -30,13 +30,17 @@ void ShaderProgram::setUniform1f(const std::string &name, float value) {
     glCall(glUniform1f(getUniformLocation(name), value));
 }
 
+void ShaderProgram::setUniformMat4f(const std::string &name, const glm::mat4 &matrix) {
+    glCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
+}
+
 unsigned int ShaderProgram::getUniformLocation(const std::string &name) {
     if (uniform_location_cache.contains(name)) {
         return uniform_location_cache[name];
     }
     int location = glGetUniformLocation(program_id, name.c_str());
     if (location < 0) {
-        std::cerr << "Warning: Location not found!" << std::endl;
+        std::cerr << "Warning: Location " << name << " not found!" << std::endl;
     } else {
         uniform_location_cache.insert(std::pair<std::string, int>(name, location));
     }

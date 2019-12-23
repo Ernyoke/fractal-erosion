@@ -1,5 +1,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <iostream>
 
 #include "Shader.h"
@@ -61,6 +64,7 @@ int main() {
     vertex_array.addBuffer(vertex_buffer, vertex_buffer_layout);
 
     IndexBuffer index_buffer(indices, 6);
+    glm::mat4 projection_matrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
 
     ShaderProgram shader_program;
 
@@ -74,6 +78,7 @@ int main() {
 
     shader_program.bind();
 //    shader_program.setUniform4f("u_Color", 0.2f, 0.3f, 0.9f, 1.0f);
+    shader_program.setUniformMat4f("u_MVP", projection_matrix);
 
     Texture texture("./res/textures/cpp_opengl_logo.jpg");
     texture.bind();
