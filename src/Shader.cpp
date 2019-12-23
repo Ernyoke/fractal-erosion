@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <utility>
 
 #include <GL/glew.h>
 

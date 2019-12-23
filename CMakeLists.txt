@@ -42,6 +42,6 @@ add_executable(${PROJECT_NAME}
         src/ShaderProgram.cpp
         src/ShaderProgram.h
         src/libs/stb/stb_image.h
-        src/libs/stb/stb_image.cpp)
+        src/libs/stb/stb_image.cpp src/Texture.cpp src/Texture.h)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
