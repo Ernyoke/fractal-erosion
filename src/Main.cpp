@@ -59,18 +59,19 @@ int main() {
 
     IndexBuffer index_buffer(indices, 6);
 
-    int shader_program_id = glCreateProgram();
-    Shader vertex_shader("./res/shaders/vertex.shader", GL_VERTEX_SHADER, shader_program_id);
-    vertex_shader.parseShader();
-    vertex_shader.createShader();
+    ShaderProgram shader_program;
 
-    Shader fragment_shader("./res/shaders/fragment.shader", GL_FRAGMENT_SHADER, shader_program_id);
-    fragment_shader.parseShader();
-    fragment_shader.createShader();
+    Shader vertex_shader("./res/shaders/vertex.shader", GL_VERTEX_SHADER);
+    vertex_shader.compileShader();
+    vertex_shader.attachShader(shader_program);
 
-    glCall(glUseProgram(shader_program_id));
+    Shader fragment_shader("./res/shaders/fragment.shader", GL_FRAGMENT_SHADER);
+    fragment_shader.compileShader();
+    fragment_shader.attachShader(shader_program);
 
-    int location = glGetUniformLocation(shader_program_id, "u_Color");
+    shader_program.useShaderProgram();
+
+    int location = glGetUniformLocation(shader_program.getProgramId(), "u_Color");
     if (location >= 0) {
         glCall(glUniform4f(location, 0.2f, 0.3f, 0.9f, 1.0f));
     }
@@ -81,7 +82,7 @@ int main() {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glCall(glUseProgram(shader_program_id));
+        shader_program.useShaderProgram();
         glCall(glUniform4f(location, r, 0.3f, 0.9f, 1.0f));
 
         vertex_array.bind();

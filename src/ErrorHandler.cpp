@@ -11,9 +11,10 @@ bool ErrorHandling::glLogCall(const std::string &function, const std::string &fi
     while (unsigned int error = glGetError()) {
         std::cerr << "[OPENGL error - code 0x"
                   << std::hex << error
-                  << " in file " << file_name
-                  << " in function " << function << ":"
-                  << std::dec << line << std::endl;
+                  << " in file: " << file_name << ":"
+                  << std::dec << line
+                  << " in function " << function
+                  << std::endl;
         return true;
     }
     return false;
