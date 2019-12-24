@@ -14,10 +14,6 @@ Shader::Shader(std::string path, unsigned int shader_type)
           renderer_id{0} {
 }
 
-Shader::~Shader() {
-    glCall(glDeleteProgram(renderer_id))
-}
-
 std::string Shader::parseShader() {
     std::ifstream stream(path);
 

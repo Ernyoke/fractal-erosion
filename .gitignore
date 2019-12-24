@@ -10,3 +10,6 @@ fractals
 # ctags
 tags
 
+# imgui
+imgui.ini
+

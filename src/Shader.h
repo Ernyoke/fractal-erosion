@@ -9,7 +9,7 @@ class Shader {
 public:
     Shader(std::string path, unsigned int shader_type);
 
-    virtual ~Shader();
+    virtual ~Shader() = default;
 
     void compileShader();
 
