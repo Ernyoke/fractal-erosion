@@ -5,6 +5,7 @@
 #include "VertexArray.h"
 #include "Renderer.h"
 #include "Texture.h"
+#include "Camera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,6 +15,8 @@ int main() {
     if (display.initialize() < 0) {
         return -1;
     }
+
+    Camera camera(glm::vec3{0, 0, -3}, 70.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
     float positions[] = {
             -0.5f, -0.5f, 0.0f, 0.0f,
@@ -51,7 +54,8 @@ int main() {
 
     shader_program.bind();
 //    shader_program.setUniform4f("u_Color", 0.2f, 0.3f, 0.9f, 1.0f);
-    shader_program.setUniformMat4f("u_MVP", projection_matrix);
+//    shader_program.setUniformMat4f("u_MVP", projection_matrix);
+    shader_program.setUniformMat4f("u_MVP", camera.getViewProjection());
 
     Texture texture("./res/textures/cpp_opengl_logo.jpg");
     texture.bind();

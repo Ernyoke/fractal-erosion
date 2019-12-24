@@ -63,6 +63,8 @@ add_executable(${PROJECT_NAME}
         src/Texture.cpp
         src/Texture.h
         src/Display.cpp
-        src/Display.h)
+        src/Display.h
+        src/Transform.cpp
+        src/Transform.h)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})

@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <glm/glm.hpp>
+#include "Camera.h"
 
 class ShaderProgram {
 public:
@@ -23,7 +24,9 @@ public:
 
     void setUniform1f(const std::string &name, float value);
 
-    void setUniformMat4f(const std::string &name, const glm::mat4& matrix);
+    void setUniformMat4f(const std::string &name, const glm::mat4 &matrix);
+
+    void update(Camera &camera);
 
 private:
     unsigned int program_id;

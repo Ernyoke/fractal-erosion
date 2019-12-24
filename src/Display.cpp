@@ -13,7 +13,7 @@ Display::Display(int width, int height, std::string title) : width{width},
 }
 
 Display::~Display() {
-    shutDownImgui();
+//    shutDownImgui();
     glfwTerminate();
 }
 
@@ -41,7 +41,7 @@ int Display::initialize() {
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    initImgui();
+//    initImgui();
 
     return 0;
 }
@@ -50,8 +50,8 @@ void Display::update() {
     if (glfwWindowShouldClose(window)) {
         is_closed = true;
     }
-    newFrameImgui();
-    renderImgui();
+//    newFrameImgui();
+//    renderImgui();
     glfwSwapBuffers(window);
     glfwPollEvents();
 }

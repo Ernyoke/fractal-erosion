@@ -46,3 +46,7 @@ unsigned int ShaderProgram::getUniformLocation(const std::string &name) {
     }
     return location;
 }
+
+void ShaderProgram::update(Camera &camera) {
+
+}
