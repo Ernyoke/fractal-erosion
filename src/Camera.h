@@ -11,6 +11,14 @@ public:
 
     [[nodiscard]] glm::mat4 getViewProjection() const;
 
+    void moveForward(float d);
+
+    void moveBackward(float d);
+
+    void moveLeft(float d);
+
+    void moveRight(float d);
+
 private:
     glm::vec3 position;
     glm::mat4 perspective;

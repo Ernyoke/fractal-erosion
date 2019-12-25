@@ -12,3 +12,19 @@ Camera::Camera(const glm::vec3 &position, float field_of_view, float aspect_rati
 glm::mat4 Camera::getViewProjection() const {
     return perspective * glm::lookAt(position, position + forward, up);
 }
+
+void Camera::moveForward(float d) {
+    position.z += d;
+}
+
+void Camera::moveBackward(float d) {
+    position.z -= d;
+}
+
+void Camera::moveLeft(float d) {
+    position.x -= d;
+}
+
+void Camera::moveRight(float d) {
+    position.x += d;
+}
