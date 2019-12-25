@@ -13,6 +13,9 @@
 
 #include "Camera.h"
 
+# define NUMBER_KEYBOARD_KEYS  1024
+# define NUMBER_MOUSE_BUTTONS 8
+
 class Display {
 public:
     Display(int width, int height, std::string title);
@@ -37,21 +40,11 @@ private:
     std::string title;
     bool is_closed;
 
-    bool show_demo_window;
-    bool show_another_window;
-    ImVec4 clear_color;
-
     GLFWwindow *window;
-
     std::shared_ptr<Camera> camera;
 
-    void initImgui();
-
-    void newFrameImgui() const;
-
-    void renderImgui();
-
-    void shutDownImgui() const;
+    double delta_time;
+    double last_time;
 
     // user input
     bool keyboard_keys[1024];
@@ -63,15 +56,30 @@ private:
     double y_change;
     bool mouse_first_moved;
 
+    bool show_demo_window;
+    bool show_another_window;
+    ImVec4 clear_color;
+
     void initInputCallbacks();
 
-    void handleInputs();
+    void handleKeyboardInputs();
 
-    static void handleKeyboardInput(GLFWwindow *window, int key, int code, int action, int mode);
+    void handleMouseInputs();
 
-    static void handleMouseMovement(GLFWwindow *window, double x, double y);
+    static void handleKeyboardInputCallback(GLFWwindow *window, int key, int code, int action, int mode);
 
-    static void handleMouseKeyInput(GLFWwindow *window, int button, int action, int mode);
+    static void handleMouseMovementCallback(GLFWwindow *window, double x, double y);
+
+    static void handleMouseKeyInputCallback(GLFWwindow *window, int button, int action, int mode);
+
+    // imgui
+    void initImgui();
+
+    void newFrameImgui() const;
+
+    void renderImgui();
+
+    void shutDownImgui() const;
 };
 
 

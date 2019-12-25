@@ -2,17 +2,25 @@
 
 #include <iostream>
 
-Display::Display(int width, int height, std::string title) : width{width},
-                                                             height{height},
-                                                             title{std::move(title)},
-                                                             is_closed{false},
-                                                             window{nullptr},
-                                                             clear_color{ImVec4(0.45f, 0.55f, 0.60f, 1.00f)},
-                                                             show_demo_window{true},
-                                                             show_another_window{false},
-                                                             camera{nullptr},
-                                                             keyboard_keys{false},
-                                                             mouse_first_moved{true} {
+Display::Display(int width, int height, std::string title)
+        : width{width},
+          height{height},
+          title{std::move(title)},
+          is_closed{false},
+          window{nullptr},
+          camera{nullptr},
+          delta_time{0.0},
+          last_time{0.0},
+          keyboard_keys{false},
+          mouse_buttons{false},
+          last_x{0.0},
+          last_y{0.0},
+          x_change{0.0},
+          y_change{0.0},
+          mouse_first_moved{true},
+          clear_color{ImVec4(0.45f, 0.55f, 0.60f, 1.00f)},
+          show_demo_window{true},
+          show_another_window{false} {
 }
 
 Display::~Display() {
@@ -59,31 +67,20 @@ void Display::update() {
         is_closed = true;
         return;
     }
-    handleInputs();
+
+    double now = glfwGetTime();
+    delta_time = now - last_time;
+    last_time = now;
+
+    handleKeyboardInputs();
+    camera->update();
+
 //    newFrameImgui();
 //    renderImgui();
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
-
-//void Display::handleKeyboardInput() {
-//    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-//        std::cout << "UP" << std::endl;
-//        camera->moveForward(0.05f);
-//    }
-//    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-//        std::cout << "DOWN" << std::endl;
-//        camera->moveBackward(0.05f);
-//    }
-//    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-//        std::cout << "LEFT" << std::endl;
-//        camera->moveLeft(0.05f);
-//    }
-//    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-//        std::cout << "RIGHT" << std::endl;
-//        camera->moveRight(0.05f);
-//    }
-//}
 
 void Display::initImgui() {
     const char *glsl_version = "#version 130";
@@ -142,48 +139,43 @@ bool Display::isClosed() const {
 
 void Display::initInputCallbacks() {
     glfwSetWindowUserPointer(window, this);
-    glfwSetKeyCallback(window, handleKeyboardInput);
-    glfwSetCursorPosCallback(window, handleMouseMovement);
-    glfwSetMouseButtonCallback(window, handleMouseKeyInput);
+    glfwSetKeyCallback(window, handleKeyboardInputCallback);
+    glfwSetCursorPosCallback(window, handleMouseMovementCallback);
+    glfwSetMouseButtonCallback(window, handleMouseKeyInputCallback);
 }
 
-void Display::handleInputs() {
-    for (int key = 0; key < 1024; key++) {
-        switch (key) {
-            case GLFW_KEY_W: {
-                if (keyboard_keys[key]) {
-                    std::cout << "W PRESSED" << std::endl;
+void Display::handleKeyboardInputs() {
+    for (int key = 0; key < NUMBER_KEYBOARD_KEYS; key++) {
+        if (keyboard_keys[key]) {
+            switch (key) {
+                case GLFW_KEY_W: {
+                    camera->move_forward(delta_time);
+                    break;
                 }
-                break;
-            }
-            case GLFW_KEY_S: {
-                if (keyboard_keys[key]) {
-                    std::cout << "S PRESSED" << std::endl;
+                case GLFW_KEY_S: {
+                    camera->move_backward(delta_time);
+                    break;
                 }
-                break;
-            }
-            case GLFW_KEY_A: {
-                if (keyboard_keys[key]) {
-                    std::cout << "A PRESSED" << std::endl;
+                case GLFW_KEY_A: {
+                    camera->move_left(delta_time);
+                    break;
                 }
-                break;
-            }
-            case GLFW_KEY_D: {
-                if (keyboard_keys[key]) {
-                    std::cout << "D PRESSED" << std::endl;
+                case GLFW_KEY_D: {
+                    camera->move_right(delta_time);
+                    break;
                 }
-                break;
+                default: {
+                    // Do nothing
+                }
             }
-            default: {
-                // Do nothing
-            }
+
         }
     }
 }
 
-void Display::handleKeyboardInput(GLFWwindow *window, int key, int code, int action, int mode) {
+void Display::handleKeyboardInputCallback(GLFWwindow *window, int key, int code, int action, int mode) {
     auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
-    if (key >= 0 && key < 1024) {
+    if (key >= 0 && key < NUMBER_KEYBOARD_KEYS) {
         if (action == GLFW_PRESS) {
             self->keyboard_keys[key] = true;
         }
@@ -193,7 +185,7 @@ void Display::handleKeyboardInput(GLFWwindow *window, int key, int code, int act
     }
 }
 
-void Display::handleMouseMovement(GLFWwindow *window, double x, double y) {
+void Display::handleMouseMovementCallback(GLFWwindow *window, double x, double y) {
     auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
     if (self->mouse_first_moved) {
         self->last_x = x;
@@ -204,12 +196,30 @@ void Display::handleMouseMovement(GLFWwindow *window, double x, double y) {
         self->y_change = y - self->last_y;
         self->last_x = x;
         self->last_y = y;
+        self->handleMouseInputs();
     }
 }
 
-void Display::handleMouseKeyInput(GLFWwindow *window, int button, int action, int mode) {
+void Display::handleMouseInputs() {
+    for (int button = 0; button < NUMBER_MOUSE_BUTTONS; button++) {
+        if (mouse_buttons[button]) {
+            switch (button) {
+                case GLFW_MOUSE_BUTTON_RIGHT:
+                case GLFW_MOUSE_BUTTON_LEFT: {
+                    camera->turn(x_change, y_change);
+                    break;
+                }
+                default: {
+                    // Do nothing
+                }
+            }
+        }
+    }
+}
+
+void Display::handleMouseKeyInputCallback(GLFWwindow *window, int button, int action, int mode) {
     auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
-    if (button >= 0 && button < 8) {
+    if (button >= 0 && button < NUMBER_MOUSE_BUTTONS) {
         if (action == GLFW_PRESS) {
             self->mouse_buttons[button] = true;
         }

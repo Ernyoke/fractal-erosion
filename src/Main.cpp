@@ -18,7 +18,10 @@ int main() {
         return -1;
     }
 
-    std::shared_ptr<Camera> camera(new Camera(glm::vec3{0, 0, -3}, 70.0f, 4.0f / 3.0f, 0.1f, 100.0f));
+    glm::mat4 projection = glm::perspective(70.0f, 640.0f / 480.0f, 0.1f, 100.0f);
+
+    std::shared_ptr<Camera> camera(
+            new Camera(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f));
 
     display.addCamera(camera);
 
@@ -44,7 +47,6 @@ int main() {
     vertex_array.addBuffer(vertex_buffer, vertex_buffer_layout);
 
     IndexBuffer index_buffer(indices, 6);
-    glm::mat4 projection_matrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
 
     ShaderProgram shader_program;
 
@@ -58,8 +60,7 @@ int main() {
 
     shader_program.bind();
 //    shader_program.setUniform4f("u_Color", 0.2f, 0.3f, 0.9f, 1.0f);
-//    shader_program.setUniformMat4f("u_MVP", projection_matrix);
-    shader_program.setUniformMat4f("u_MVP", camera->getViewProjection());
+    shader_program.setUniformMat4f("u_MVP", projection * camera->calculateViewMatrix());
 
     Texture texture("./res/textures/cpp_opengl_logo.jpg");
     texture.bind();
@@ -71,7 +72,7 @@ int main() {
         renderer.clear();
 
         shader_program.setUniform1i("u_Texture", 0);
-        shader_program.setUniformMat4f("u_MVP", camera->getViewProjection());
+        shader_program.setUniformMat4f("u_MVP", projection * camera->calculateViewMatrix());
         renderer.draw(vertex_array, index_buffer, shader_program);
 
         display.update();

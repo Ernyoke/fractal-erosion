@@ -5,25 +5,38 @@
 
 class Camera {
 public:
-    Camera(const glm::vec3 &position, float field_of_view, float aspect_ratio, float z_near, float z_far);
+    Camera(const glm::vec3 &position, const glm::vec3 &world_up, float yaw, float pitch);
 
     virtual ~Camera() = default;
 
-    [[nodiscard]] glm::mat4 getViewProjection() const;
+    void update();
 
-    void moveForward(float d);
+    void move_forward(double delta_time);
 
-    void moveBackward(float d);
+    void move_backward(double delta_time);
 
-    void moveLeft(float d);
+    void move_left(double delta_time);
 
-    void moveRight(float d);
+    void move_right(double delta_time);
+
+    void turn(double x, double y);
+
+    [[nodiscard]] glm::mat4 calculateViewMatrix() const;
+
 
 private:
     glm::vec3 position;
-    glm::mat4 perspective;
-    glm::vec3 forward;
+    glm::vec3 front;
     glm::vec3 up;
+    glm::vec3 right;
+    glm::vec3 world_up;
+
+    float yaw;
+    float pitch;
+
+    float movement_speed;
+    float turn_speed;
+
 };
 
 
