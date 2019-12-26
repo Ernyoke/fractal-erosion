@@ -65,6 +65,6 @@ add_executable(${PROJECT_NAME}
         src/Display.cpp
         src/Display.h
         src/Transform.cpp
-        src/Transform.h)
+        src/Transform.h src/DiamondSquareFractal.cpp src/DiamondSquareFractal.h src/MathHelper.cpp src/MathHelper.h src/FractalResult.cpp src/FractalResult.h src/ColorHelper.cpp src/ColorHelper.h src/MaterialHelper.cpp src/MaterialHelper.h)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})

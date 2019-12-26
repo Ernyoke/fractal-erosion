@@ -10,7 +10,7 @@ Camera::Camera(const glm::vec3 &position, const glm::vec3 &world_up, float yaw, 
           yaw{yaw},
           pitch{pitch},
           world_up{world_up},
-          movement_speed{1.0f},
+          movement_speed{10.0f},
           turn_speed{0.1f} {
     update();
 }
