@@ -6,10 +6,10 @@ bool MathHelper::isPowerOf2(int value) {
 
 long MathHelper::randRange(long min, long max, int seed) {
     std::random_device device;
-    std::mt19937 generator(device());
-    if (seed != 0) {
-        generator.seed(seed);
+    if (seed) {
+        seed = device();
     }
+    std::mt19937 generator(seed);
     std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
     return distribution(generator);
 }

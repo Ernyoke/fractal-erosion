@@ -2,12 +2,15 @@
 
 #include "ErrorHandler.h"
 
-Renderer::Renderer() = default;
+Renderer::Renderer() {
+    glCall(glEnable(GL_DEPTH_TEST));
+    glCall(glDepthFunc(GL_LEQUAL));
+}
 
 Renderer::~Renderer() = default;
 
 void Renderer::clear() const {
-    glCall(glClear(GL_COLOR_BUFFER_BIT));
+    glCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 void Renderer::draw(const VertexArray &vertex_array, const IndexBuffer &index_buffer,
