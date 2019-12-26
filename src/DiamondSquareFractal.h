@@ -16,7 +16,7 @@ private:
     int grid_size;
     float **grid;
 
-    void generateGrid(int seed = 0, float random_min = 0.0f, float random_max = 255.0f, float noise = 0.0f);
+    void generateGrid(int seed = 0, float random_min = 0.0f, float random_max = 40.0f, float noise = 0.7f);
 
     void cleanUpGrid();
 };

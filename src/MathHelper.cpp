@@ -18,7 +18,7 @@ float MathHelper::randRange(float min, float max, int seed) {
     constexpr long MIN = 0L;
     constexpr long MAX = 100L;
     long initial_random = randRange(MIN, MAX, seed);
-    return (float) initial_random / (float) MAX + (max - min);
+    return ((float) initial_random / (float) MAX) * (max - min) + min;
 }
 
 float MathHelper::normalize(float value, float min, float max) {
