@@ -10,7 +10,6 @@ Camera::Camera(const glm::vec3 &position, const glm::vec3 &world_up, float yaw, 
           yaw{yaw},
           pitch{pitch},
           world_up{world_up},
-          movement_speed{10.0f},
           turn_speed{0.1f} {
     update();
 }
@@ -26,19 +25,19 @@ void Camera::update() {
     up = glm::normalize(glm::cross(right, front));
 }
 
-void Camera::move_forward(double delta_time) {
+void Camera::move_forward(double delta_time, float movement_speed) {
     position += front * movement_speed * static_cast<float>(delta_time);
 }
 
-void Camera::move_backward(double delta_time) {
+void Camera::move_backward(double delta_time, float movement_speed) {
     position -= front * movement_speed * static_cast<float>(delta_time);
 }
 
-void Camera::move_left(double delta_time) {
+void Camera::move_left(double delta_time, float movement_speed) {
     position -= right * movement_speed * static_cast<float>(delta_time);
 }
 
-void Camera::move_right(double delta_time) {
+void Camera::move_right(double delta_time, float movement_speed) {
     position += right * movement_speed * static_cast<float>(delta_time);
 }
 

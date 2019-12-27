@@ -62,8 +62,6 @@ add_executable(${BINARY}
         Texture.h
         Display.cpp
         Display.h
-        Transform.cpp
-        Transform.h
         DiamondSquareFractal.cpp
         DiamondSquareFractal.h
         MathHelper.cpp

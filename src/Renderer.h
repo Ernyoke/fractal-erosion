@@ -12,7 +12,7 @@ public:
 
     void clear() const;
 
-    void draw(const Terrain &terrain, const std::unique_ptr<ShaderProgram> &shader_program) const;
+    void draw(const std::unique_ptr<Terrain> &terrain, const std::unique_ptr<ShaderProgram> &shader_program) const;
 };
 
 

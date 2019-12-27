@@ -51,7 +51,7 @@ private:
 
     GLFWwindow *window;
     Camera camera;
-    Terrain terrain;
+    std::unique_ptr<Terrain> terrain;
     std::unique_ptr<ShaderProgram> shader_program;
     Renderer renderer;
 
@@ -92,6 +92,8 @@ private:
     static void handleMouseMovementCallback(GLFWwindow *window, double x, double y);
 
     static void handleMouseKeyInputCallback(GLFWwindow *window, int button, int action, int mode);
+
+    static void handleMouseScrollInputCallback(GLFWwindow *window, double x, double y);
 
     // imgui
     void initImgui();

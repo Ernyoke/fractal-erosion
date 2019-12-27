@@ -20,6 +20,7 @@ Display::Display(int width, int height, float field_of_view, std::string title)
                   glm::vec3{0.0f, 1.0f, 0.0f},
                   -90.0f,
                   0.0f},
+          terrain{nullptr},
           fractal{nullptr},
           delta_time{0.0},
           last_time{0.0},
@@ -84,7 +85,8 @@ void Display::update() {
     last_time = now;
 
     renderer.clear();
-    shader_program->setUniformMat4f("u_MVP", projection_matrix * camera.calculateViewMatrix());
+    shader_program->setUniformMat4f("u_MVP",
+                                    projection_matrix * camera.calculateViewMatrix() * terrain->getModelMatrix());
     renderer.draw(terrain, shader_program);
 
     handleKeyboardInputs();
@@ -156,11 +158,8 @@ void Display::shutDownImgui() const {
 void Display::createFractal() {
     fractal = std::make_unique<DiamondSquareFractal>();
     fractal_result = fractal->generate();
-    terrain.initVertexArray();
-    terrain.initBuffers(fractal_result.vertices->data(), fractal_result.vertices->size() * Vertex::SIZE,
-                        fractal_result.indices->data(), fractal_result.indices->size());
-    terrain.initVertexBufferLayout();
-    terrain.addBuffersToVertexArray();
+    terrain = std::make_unique<Terrain>(fractal_result.vertices->data(), fractal_result.vertices->size() * Vertex::SIZE,
+                                        fractal_result.indices->data(), fractal_result.indices->size());
 }
 
 void Display::initShaderProgram() {
@@ -184,6 +183,7 @@ void Display::initInputCallbacks() {
     glfwSetKeyCallback(window, handleKeyboardInputCallback);
     glfwSetCursorPosCallback(window, handleMouseMovementCallback);
     glfwSetMouseButtonCallback(window, handleMouseKeyInputCallback);
+    glfwSetScrollCallback(window, handleMouseScrollInputCallback);
 }
 
 void Display::handleKeyboardInputs() {
@@ -248,7 +248,8 @@ void Display::handleMouseInputs() {
             switch (button) {
                 case GLFW_MOUSE_BUTTON_RIGHT:
                 case GLFW_MOUSE_BUTTON_LEFT: {
-                    camera.turn(x_change, y_change);
+                    camera.turn(0.0f, y_change);
+                    terrain->rotate(x_change);
                     break;
                 }
                 default: {
@@ -267,6 +268,17 @@ void Display::handleMouseKeyInputCallback(GLFWwindow *window, int button, int ac
         }
         if (action == GLFW_RELEASE) {
             self->mouse_buttons[button] = false;
+        }
+    }
+}
+
+void Display::handleMouseScrollInputCallback(GLFWwindow *window, double x, double y) {
+    auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
+    if (y > 0) {
+        self->camera.move_forward(self->delta_time);
+    } else {
+        if (y < 0) {
+            self->camera.move_backward(self->delta_time);
         }
     }
 }

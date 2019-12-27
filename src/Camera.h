@@ -11,13 +11,13 @@ public:
 
     void update();
 
-    void move_forward(double delta_time);
+    void move_forward(double delta_time, float movement_speed = 10.0f);
 
-    void move_backward(double delta_time);
+    void move_backward(double delta_time, float movement_speed = 10.0f);
 
-    void move_left(double delta_time);
+    void move_left(double delta_time, float movement_speed = 10.0f);
 
-    void move_right(double delta_time);
+    void move_right(double delta_time,float movement_speed = 10.0f);
 
     void turn(double x, double y);
 
@@ -34,7 +34,6 @@ private:
     float yaw;
     float pitch;
 
-    float movement_speed;
     float turn_speed;
 
 };
