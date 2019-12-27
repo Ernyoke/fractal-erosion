@@ -2,11 +2,10 @@
 
 #include "MathHelper.h"
 #include "MaterialHelper.h"
+#include "FractalResult.h"
 
 #include <memory>
 #include <vector>
-#include <iostream>
-#include <limits>
 #include <algorithm>
 
 DiamondSquareFractal::DiamondSquareFractal()
@@ -60,22 +59,14 @@ FractalResult DiamondSquareFractal::generate() {
         }
     }
 
-    std::vector<int> asd;
-    float min = INT_MAX;
-    float max = INT_MIN;
-
-    for (const auto &vertex : *vertices) {
-        float y = vertex.coordinates.y;
-        if (y < min) {
-            min = y;
-        }
-        if (y > max) {
-            max = y;
-        }
-    }
+    auto minmax = std::minmax_element(vertices->begin(), vertices->end(), [](const Vertex &a, const Vertex &b) {
+        return a.coordinates.y < b.coordinates.y;
+    });
 
     for (auto &vertex: *vertices) {
-        vertex.color = MaterialHelper::getTerrainColorForHeight(vertex.coordinates.y, min, max);
+        vertex.color = MaterialHelper::getTerrainColorForHeight(vertex.coordinates.y,
+                                                                minmax.first->coordinates.y,
+                                                                minmax.second->coordinates.y);
     }
 
     return {vertices, indices};

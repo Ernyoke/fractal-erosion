@@ -6,7 +6,6 @@
 #include "MathHelper.h"
 
 class MathHelperTests : public ::testing::Test {
-
 };
 
 

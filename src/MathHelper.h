@@ -12,6 +12,8 @@ namespace MathHelper {
     float randRange(float min, float max, int seed);
 
     float normalize(float value, float min, float max);
+
+    float clampBetween(float value, float lower, float higher);
 };
 
 

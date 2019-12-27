@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "MathHelper.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -48,12 +49,7 @@ void Camera::turn(double x, double y) {
     yaw += x_velocity;
     pitch += y_velocity;
 
-    if (pitch > 89.0f) {
-        pitch = 89.0f;
-    }
-    if (pitch < -89.0f) {
-        pitch = -89.0f;
-    }
+    pitch = MathHelper::clampBetween(pitch, -89.0f, 89.0f);
 
     update();
 }

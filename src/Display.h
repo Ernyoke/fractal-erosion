@@ -56,10 +56,9 @@ private:
     Renderer renderer;
 
     std::unique_ptr<DiamondSquareFractal> fractal;
-    FractalResult fractal_result;
 
     double delta_time;
-    double last_time;
+    double last_time_stamp;
 
     bool show_demo_window;
     bool show_another_window;
@@ -75,7 +74,6 @@ private:
     bool mouse_first_moved;
 
     // opengl
-
     void createFractal();
 
     void initShaderProgram();

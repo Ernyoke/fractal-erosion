@@ -24,3 +24,13 @@ float MathHelper::randRange(float min, float max, int seed) {
 float MathHelper::normalize(float value, float min, float max) {
     return (value - min) / (max - min);
 }
+
+float MathHelper::clampBetween(float value, float lower, float higher) {
+    if (value > higher) {
+        return higher;
+    }
+    if (value < lower) {
+        return lower;
+    }
+    return value;
+}

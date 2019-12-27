@@ -6,6 +6,7 @@ cmake-build-debug
 
 # Binaries
 fractals
+fractals_test
 
 # ctags
 tags

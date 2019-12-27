@@ -16,14 +16,14 @@ Display::Display(int width, int height, float field_of_view, std::string title)
                                    Z_FAR)},
           window{nullptr},
           camera{
-                  glm::vec3{0.0f, 10.0f, 1.0f},
+                  glm::vec3{0.0f, 25.0f, 45.0f},
                   glm::vec3{0.0f, 1.0f, 0.0f},
                   -90.0f,
-                  0.0f},
+                  -35.0f},
           terrain{nullptr},
           fractal{nullptr},
           delta_time{0.0},
-          last_time{0.0},
+          last_time_stamp{0.0},
           keyboard_keys{false},
           mouse_buttons{false},
           last_x{0.0},
@@ -81,8 +81,8 @@ void Display::update() {
     }
 
     double now = glfwGetTime();
-    delta_time = now - last_time;
-    last_time = now;
+    delta_time = now - last_time_stamp;
+    last_time_stamp = now;
 
     renderer.clear();
     shader_program->setUniformMat4f("u_MVP",
@@ -157,7 +157,7 @@ void Display::shutDownImgui() const {
 
 void Display::createFractal() {
     fractal = std::make_unique<DiamondSquareFractal>();
-    fractal_result = fractal->generate();
+    FractalResult fractal_result = fractal->generate();
     terrain = std::make_unique<Terrain>(fractal_result.vertices->data(), fractal_result.vertices->size() * Vertex::SIZE,
                                         fractal_result.indices->data(), fractal_result.indices->size());
 }
