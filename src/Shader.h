@@ -2,6 +2,7 @@
 #define FRACTALS_SHADER_H
 
 #include <iostream>
+#include <memory>
 
 #include "ShaderProgram.h"
 
@@ -13,7 +14,7 @@ public:
 
     void compileShader();
 
-    void attachShader(const ShaderProgram &shaderProgram);
+    void attachShader(const std::unique_ptr<ShaderProgram> &shaderProgram);
 
 private:
     std::string path;

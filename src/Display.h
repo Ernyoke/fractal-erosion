@@ -7,18 +7,27 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
 #include "libs/imgui/imgui.h"
 #include "libs/imgui/imgui_impl_glfw.h"
 #include "libs/imgui/imgui_impl_opengl3.h"
 
 #include "Camera.h"
+#include "DiamondSquareFractal.h"
+#include "Terrain.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "ShaderProgram.h"
 
-# define NUMBER_KEYBOARD_KEYS  1024
-# define NUMBER_MOUSE_BUTTONS 8
+constexpr int NUMBER_KEYBOARD_KEYS = 1024;
+constexpr int NUMBER_MOUSE_BUTTONS = 8;
+constexpr float Z_NEAR = 0.1f;
+constexpr float Z_FAR = 500.0f;
 
 class Display {
 public:
-    Display(int width, int height, std::string title);
+    Display(int width, int height, float field_of_view, std::string title);
 
     Display(const Display &display) = delete;
 
@@ -30,8 +39,6 @@ public:
 
     void update();
 
-    void addCamera(const std::shared_ptr<Camera> &camera);
-
     [[nodiscard]] bool isClosed() const;
 
 private:
@@ -40,13 +47,24 @@ private:
     std::string title;
     bool is_closed;
 
+    glm::mat4 projection_matrix;
+
     GLFWwindow *window;
-    std::shared_ptr<Camera> camera;
+    Camera camera;
+    Terrain terrain;
+    std::unique_ptr<ShaderProgram> shader_program;
+    Renderer renderer;
+
+    std::unique_ptr<DiamondSquareFractal> fractal;
+    FractalResult fractal_result;
 
     double delta_time;
     double last_time;
 
-    // user input
+    bool show_demo_window;
+    bool show_another_window;
+    ImVec4 clear_color;
+
     bool keyboard_keys[1024];
     bool mouse_buttons[8];
 
@@ -56,10 +74,13 @@ private:
     double y_change;
     bool mouse_first_moved;
 
-    bool show_demo_window;
-    bool show_another_window;
-    ImVec4 clear_color;
+    // opengl
 
+    void createFractal();
+
+    void initShaderProgram();
+
+    // user input
     void initInputCallbacks();
 
     void handleKeyboardInputs();

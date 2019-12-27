@@ -43,8 +43,8 @@ void Shader::compileShader() {
     }
 }
 
-void Shader::attachShader(const ShaderProgram &shaderProgram) {
-    unsigned int shader_program_id = shaderProgram.getProgramId();
+void Shader::attachShader(const std::unique_ptr<ShaderProgram> &shaderProgram) {
+    unsigned int shader_program_id = shaderProgram->getProgramId();
 
     if (renderer_id) {
         glCall(glAttachShader(shader_program_id, renderer_id));

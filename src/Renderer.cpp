@@ -2,6 +2,8 @@
 
 #include "ErrorHandler.h"
 
+#include <memory>
+
 Renderer::Renderer() {
     glCall(glEnable(GL_DEPTH_TEST));
     glCall(glDepthFunc(GL_LEQUAL));
@@ -13,11 +15,9 @@ void Renderer::clear() const {
     glCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
-void Renderer::draw(const VertexArray &vertex_array, const IndexBuffer &index_buffer,
-                    const ShaderProgram &shader_program) const {
-    shader_program.bind();
-    vertex_array.bind();
-    index_buffer.bind();
+void Renderer::draw(const Terrain &terrain, const std::unique_ptr<ShaderProgram> &shader_program) const {
+    shader_program->bind();
+    terrain.bind();
 
-    glCall(glDrawElements(GL_TRIANGLES, index_buffer.getCount(), GL_UNSIGNED_INT, nullptr));
+    glCall(glDrawElements(GL_TRIANGLES, terrain.getNumberOfVertices(), GL_UNSIGNED_INT, nullptr));
 }

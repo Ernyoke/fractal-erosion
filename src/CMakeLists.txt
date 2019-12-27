@@ -1,5 +1,3 @@
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
 set(BINARY ${CMAKE_PROJECT_NAME})
 
 set(SOURCES ${SOURCES})
@@ -75,7 +73,9 @@ add_executable(${BINARY}
         ColorHelper.cpp
         ColorHelper.h
         MaterialHelper.cpp
-        MaterialHelper.h)
+        MaterialHelper.h
+        Terrain.cpp
+        Terrain.h)
 
 target_link_libraries(${BINARY} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
 

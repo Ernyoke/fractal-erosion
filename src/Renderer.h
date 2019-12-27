@@ -1,8 +1,7 @@
 #ifndef FRACTALS_RENDERER_H
 #define FRACTALS_RENDERER_H
 
-#include "VertexArray.h"
-#include "IndexBuffer.h"
+#include "Terrain.h"
 #include "ShaderProgram.h"
 
 class Renderer {
@@ -13,8 +12,7 @@ public:
 
     void clear() const;
 
-    void
-    draw(const VertexArray &vertex_array, const IndexBuffer &index_buffer, const ShaderProgram &shader_program) const;
+    void draw(const Terrain &terrain, const std::unique_ptr<ShaderProgram> &shader_program) const;
 };
 
 

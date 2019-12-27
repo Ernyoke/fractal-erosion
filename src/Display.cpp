@@ -2,13 +2,25 @@
 
 #include <iostream>
 
-Display::Display(int width, int height, std::string title)
+#include <glm/gtc/matrix_transform.hpp>
+
+Display::Display(int width, int height, float field_of_view, std::string title)
         : width{width},
           height{height},
           title{std::move(title)},
           is_closed{false},
+          projection_matrix{
+                  glm::perspective(field_of_view,
+                                   static_cast<float>(width) / static_cast<float>(height),
+                                   Z_NEAR,
+                                   Z_FAR)},
           window{nullptr},
-          camera{nullptr},
+          camera{
+                  glm::vec3{0.0f, 10.0f, 1.0f},
+                  glm::vec3{0.0f, 1.0f, 0.0f},
+                  -90.0f,
+                  0.0f},
+          fractal{nullptr},
           delta_time{0.0},
           last_time{0.0},
           keyboard_keys{false},
@@ -18,7 +30,7 @@ Display::Display(int width, int height, std::string title)
           x_change{0.0},
           y_change{0.0},
           mouse_first_moved{true},
-          clear_color{ImVec4(0.45f, 0.55f, 0.60f, 1.00f)},
+          clear_color{ImVec4{0.45f, 0.55f, 0.60f, 1.00f}},
           show_demo_window{true},
           show_another_window{false} {
 }
@@ -55,11 +67,10 @@ int Display::initialize() {
     initInputCallbacks();
 //    initImgui();
 
-    return 0;
-}
+    createFractal();
+    initShaderProgram();
 
-void Display::addCamera(const std::shared_ptr<Camera> &camera) {
-    this->camera = camera;
+    return 0;
 }
 
 void Display::update() {
@@ -72,14 +83,23 @@ void Display::update() {
     delta_time = now - last_time;
     last_time = now;
 
+    renderer.clear();
+    shader_program->setUniformMat4f("u_MVP", projection_matrix * camera.calculateViewMatrix());
+    renderer.draw(terrain, shader_program);
+
     handleKeyboardInputs();
-    camera->update();
+    camera.update();
 
 //    newFrameImgui();
 //    renderImgui();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
+}
+
+
+bool Display::isClosed() const {
+    return is_closed;
 }
 
 void Display::initImgui() {
@@ -133,9 +153,31 @@ void Display::shutDownImgui() const {
     ImGui::DestroyContext();
 }
 
-bool Display::isClosed() const {
-    return is_closed;
+void Display::createFractal() {
+    fractal = std::make_unique<DiamondSquareFractal>();
+    fractal_result = fractal->generate();
+    terrain.initVertexArray();
+    terrain.initBuffers(fractal_result.vertices->data(), fractal_result.vertices->size() * Vertex::SIZE,
+                        fractal_result.indices->data(), fractal_result.indices->size());
+    terrain.initVertexBufferLayout();
+    terrain.addBuffersToVertexArray();
 }
+
+void Display::initShaderProgram() {
+    shader_program = std::make_unique<ShaderProgram>();
+
+    Shader vertex_shader("./res/shaders/vertex.shader", GL_VERTEX_SHADER);
+    vertex_shader.compileShader();
+    vertex_shader.attachShader(shader_program);
+
+    Shader fragment_shader("./res/shaders/fragment.shader", GL_FRAGMENT_SHADER);
+    fragment_shader.compileShader();
+    fragment_shader.attachShader(shader_program);
+
+    shader_program->bind();
+    shader_program->setUniformMat4f("u_MVP", projection_matrix * camera.calculateViewMatrix());
+}
+
 
 void Display::initInputCallbacks() {
     glfwSetWindowUserPointer(window, this);
@@ -149,19 +191,19 @@ void Display::handleKeyboardInputs() {
         if (keyboard_keys[key]) {
             switch (key) {
                 case GLFW_KEY_W: {
-                    camera->move_forward(delta_time);
+                    camera.move_forward(delta_time);
                     break;
                 }
                 case GLFW_KEY_S: {
-                    camera->move_backward(delta_time);
+                    camera.move_backward(delta_time);
                     break;
                 }
                 case GLFW_KEY_A: {
-                    camera->move_left(delta_time);
+                    camera.move_left(delta_time);
                     break;
                 }
                 case GLFW_KEY_D: {
-                    camera->move_right(delta_time);
+                    camera.move_right(delta_time);
                     break;
                 }
                 default: {
@@ -206,7 +248,7 @@ void Display::handleMouseInputs() {
             switch (button) {
                 case GLFW_MOUSE_BUTTON_RIGHT:
                 case GLFW_MOUSE_BUTTON_LEFT: {
-                    camera->turn(x_change, y_change);
+                    camera.turn(x_change, y_change);
                     break;
                 }
                 default: {

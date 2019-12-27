@@ -4,13 +4,17 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
+#include <memory>
+
 class VertexArray {
 public:
     VertexArray();
 
     virtual ~VertexArray();
 
-    void addBuffer(const VertexBuffer &vertex_buffer, const VertexBufferLayout &vertex_buffer_layout);
+    void
+    addBuffer(const std::unique_ptr<VertexBuffer> &vertex_buffer,
+              const std::unique_ptr<VertexBufferLayout> &vertex_buffer_layout);
 
     void bind() const;
 
