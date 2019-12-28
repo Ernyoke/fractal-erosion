@@ -7,13 +7,10 @@
 Display::Display(int width, int height, float field_of_view, std::string title)
         : width{width},
           height{height},
+          field_of_view{field_of_view},
           title{std::move(title)},
           is_closed{false},
-          projection_matrix{
-                  glm::perspective(field_of_view,
-                                   static_cast<float>(width) / static_cast<float>(height),
-                                   Z_NEAR,
-                                   Z_FAR)},
+          projection_matrix{calcProjectionMatrix(width, height, field_of_view)},
           window{nullptr},
           camera{
                   glm::vec3{0.0f, 25.0f, 45.0f},
@@ -65,7 +62,7 @@ int Display::initialize() {
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    initInputCallbacks();
+    initCallbacks();
 //    initImgui();
 
     createFractal();
@@ -174,16 +171,16 @@ void Display::initShaderProgram() {
     fragment_shader.attachShader(shader_program);
 
     shader_program->bind();
-    shader_program->setUniformMat4f("u_MVP", projection_matrix * camera.calculateViewMatrix());
 }
 
 
-void Display::initInputCallbacks() {
+void Display::initCallbacks() {
     glfwSetWindowUserPointer(window, this);
     glfwSetKeyCallback(window, handleKeyboardInputCallback);
     glfwSetCursorPosCallback(window, handleMouseMovementCallback);
     glfwSetMouseButtonCallback(window, handleMouseKeyInputCallback);
     glfwSetScrollCallback(window, handleMouseScrollInputCallback);
+    glfwSetWindowSizeCallback(window, handleWindowSizeCallback);
 }
 
 void Display::handleKeyboardInputs() {
@@ -281,4 +278,19 @@ void Display::handleMouseScrollInputCallback(GLFWwindow *window, double x, doubl
             self->camera.move_backward(self->delta_time);
         }
     }
+}
+
+void Display::handleWindowSizeCallback(GLFWwindow *window, int width, int height) {
+    auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
+    self->width = width;
+    self->height = height;
+    self->projection_matrix = calcProjectionMatrix(width, height, self->field_of_view);
+    glViewport(0, 0, width, height);
+}
+
+glm::mat4 Display::calcProjectionMatrix(int width, int height, float field_of_view) {
+    return glm::perspective(field_of_view,
+                            static_cast<float>(width) / static_cast<float>(height),
+                            Z_NEAR,
+                            Z_FAR);
 }

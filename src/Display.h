@@ -44,6 +44,7 @@ public:
 private:
     int width;
     int height;
+    float field_of_view;
     std::string title;
     bool is_closed;
 
@@ -78,9 +79,10 @@ private:
 
     void initShaderProgram();
 
-    // user input
-    void initInputCallbacks();
+    // glfw initialize callbacks
+    void initCallbacks();
 
+    // user input
     void handleKeyboardInputs();
 
     void handleMouseInputs();
@@ -92,6 +94,11 @@ private:
     static void handleMouseKeyInputCallback(GLFWwindow *window, int button, int action, int mode);
 
     static void handleMouseScrollInputCallback(GLFWwindow *window, double x, double y);
+
+    // window size
+    static void handleWindowSizeCallback(GLFWwindow *window, int width, int height);
+
+    static glm::mat4 calcProjectionMatrix(int width, int height, float field_of_view);
 
     // imgui
     void initImgui();
