@@ -5,6 +5,7 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
+#include "Material.h"
 
 #include <memory>
 
@@ -25,11 +26,15 @@ public:
 
     void rotate(double x_change);
 
+    Material getMaterial() const;
+
 private:
     std::unique_ptr<VertexArray> vertex_array;
     std::unique_ptr<VertexBuffer> vertex_buffer;
     std::unique_ptr<VertexBufferLayout> vertex_buffer_layout;
     std::unique_ptr<IndexBuffer> index_buffer;
+
+    Material material;
 
     glm::mat4 model_matrix;
 

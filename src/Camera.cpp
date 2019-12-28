@@ -57,3 +57,7 @@ void Camera::turn(double x, double y) {
 glm::mat4 Camera::calculateViewMatrix() const {
     return glm::lookAt(position, position + front, up);
 }
+
+glm::vec3 Camera::getPosition() const {
+    return position;
+}

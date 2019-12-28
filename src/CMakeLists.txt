@@ -75,8 +75,10 @@ add_executable(${BINARY}
         Terrain.cpp
         Terrain.h
         Light.cpp
-        Light.h)
+        Light.h
+        Material.cpp
+        Material.h)
 
-target_link_libraries(${BINARY} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
+target_link_libraries(${BINARY} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} pthread)
 
 add_library(${BINARY}_lib STATIC MathHelper.cpp MathHelper.h)

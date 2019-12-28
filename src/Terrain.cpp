@@ -3,7 +3,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Terrain::Terrain(const void *vertex_data, unsigned int vertex_data_size, const unsigned int *index_data,
-                 unsigned int count) : model_matrix{1.0f}, rotation_angle{0.0f}, rotation_speed{0.01f} {
+                 unsigned int count) : model_matrix{1.0f},
+                                       rotation_angle{0.0f},
+                                       rotation_speed{0.01f},
+                                       material{0.5f, 32.0f} {
     // initialize vertex array
     vertex_array = std::make_unique<VertexArray>();
     vertex_array->bind();
@@ -53,4 +56,8 @@ void Terrain::rotate(double x_change) {
 
 glm::mat4 Terrain::getModelMatrix() const {
     return model_matrix;
+}
+
+Material Terrain::getMaterial() const {
+    return material;
 }

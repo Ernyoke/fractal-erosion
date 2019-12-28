@@ -17,12 +17,13 @@ public:
 
     void move_left(double delta_time, float movement_speed = 10.0f);
 
-    void move_right(double delta_time,float movement_speed = 10.0f);
+    void move_right(double delta_time, float movement_speed = 10.0f);
 
     void turn(double x, double y);
 
     [[nodiscard]] glm::mat4 calculateViewMatrix() const;
 
+    [[nodiscard]] glm::vec3 getPosition() const;
 
 private:
     glm::vec3 position;

@@ -1,6 +1,8 @@
 #include "Display.h"
+#include "Material.h"
 
 #include <iostream>
+#include <future>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -70,6 +72,8 @@ int Display::initialize() {
     initCallbacks();
 //    initImgui();
 
+//    auto future = std::async(std::launch::async, &Display::createFractal, this);
+//    future.get();
     createFractal();
     initShaderProgram();
 
@@ -82,16 +86,17 @@ void Display::update() {
         return;
     }
     directional_light.useLight(shader_program);
+    terrain->getMaterial().useMaterial(shader_program);
+
     double now = glfwGetTime();
     delta_time = now - last_time_stamp;
     last_time_stamp = now;
 
     renderer.clear();
-//    shader_program->setUniformMat4f("u_MVP",
-//                                    projection_matrix * camera.calculateViewMatrix() * terrain->getModelMatrix());
     shader_program->setUniformMat4f("u_Model", terrain->getModelMatrix());
     shader_program->setUniformMat4f("u_View", camera.calculateViewMatrix());
     shader_program->setUniformMat4f("u_Projection", projection_matrix);
+    shader_program->setUniform3f("u_EyePosition", camera.getPosition());
     renderer.draw(terrain, shader_program);
 
     handleKeyboardInputs();
@@ -163,8 +168,10 @@ void Display::shutDownImgui() const {
 void Display::createFractal() {
     fractal = std::make_unique<DiamondSquareFractal>();
     FractalResult fractal_result = fractal->generate();
-    terrain = std::make_unique<Terrain>(fractal_result.vertices->data(), fractal_result.vertices->size() * Vertex::SIZE,
-                                        fractal_result.indices->data(), fractal_result.indices->size());
+    terrain = std::make_unique<Terrain>(fractal_result.vertices->data(),
+                                        fractal_result.vertices->size() * Vertex::SIZE,
+                                        fractal_result.indices->data(),
+                                        fractal_result.indices->size());
 }
 
 void Display::initShaderProgram() {
