@@ -66,8 +66,8 @@ add_executable(${BINARY}
         DiamondSquareFractal.h
         MathHelper.cpp
         MathHelper.h
-        FractalResult.cpp
         FractalResult.h
+        Vertex.h
         ColorHelper.cpp
         ColorHelper.h
         MaterialHelper.cpp

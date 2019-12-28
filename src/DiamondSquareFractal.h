@@ -19,6 +19,15 @@ private:
     void generateGrid(int seed = 2, float random_min = 0.0f, float random_max = 40.0f, float noise = 0.7f);
 
     void cleanUpGrid();
+
+    std::shared_ptr<std::vector<Vertex>> computeVertices();
+
+    std::shared_ptr<std::vector<unsigned int>> computeIndices();
+
+    static void computeNormals(std::shared_ptr<std::vector<Vertex>> &vertices,
+                               const std::shared_ptr<std::vector<unsigned int>> &indices);
+
+    static void computeTextureColors(std::shared_ptr<std::vector<Vertex>> &vertices);
 };
 
 
