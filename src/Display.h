@@ -19,6 +19,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
+#include "Light.h"
 
 constexpr int NUMBER_KEYBOARD_KEYS = 1024;
 constexpr int NUMBER_MOUSE_BUTTONS = 8;
@@ -54,6 +55,7 @@ private:
     Camera camera;
     std::unique_ptr<Terrain> terrain;
     std::unique_ptr<ShaderProgram> shader_program;
+    Light directional_light;
     Renderer renderer;
 
     std::unique_ptr<DiamondSquareFractal> fractal;

@@ -7,14 +7,15 @@
 #include <glm/glm.hpp>
 
 struct Vertex {
-    Vertex(const glm::vec3 &coordinates, const glm::vec4 &color)
-            : coordinates{coordinates}, color{color} {
+    Vertex(const glm::vec3 &coordinates, const glm::vec4 &color, const glm::vec3 &normal)
+            : coordinates{coordinates}, color{color}, normal{normal} {
     }
 
     glm::vec3 coordinates;
     glm::vec4 color;
+    glm::vec3 normal;
 
-    static constexpr unsigned int SIZE = 7 * sizeof(float);
+    static constexpr unsigned int SIZE = 10 * sizeof(float);
 };
 
 struct FractalResult {

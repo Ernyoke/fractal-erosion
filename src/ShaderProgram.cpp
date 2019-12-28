@@ -18,6 +18,10 @@ void ShaderProgram::bind() const {
     glCall(glUseProgram(program_id));
 }
 
+void ShaderProgram::setUniform3f(const std::string &name, const glm::vec3 &vector) {
+    glCall(glUniform3f(getUniformLocation(name), vector.x, vector.y, vector.z));
+}
+
 void ShaderProgram::setUniform4f(const std::string &name, float v0, float v1, float v2, float v3) {
     glCall(glUniform4f(getUniformLocation(name), v0, v1, v2, v3));
 }

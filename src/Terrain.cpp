@@ -21,6 +21,9 @@ Terrain::Terrain(const void *vertex_data, unsigned int vertex_data_size, const u
     // we expect that the layout for for the color information is vec4 with floats for RGBA channels
     vertex_buffer_layout->push<float>(4);
 
+    // we expect that the layout for the normal is a vec4 of floats
+    vertex_buffer_layout->push<float>(3);
+
     // attach the vertex buffer and
     vertex_array->addBuffer(vertex_buffer, vertex_buffer_layout);
 }
@@ -43,7 +46,9 @@ void Terrain::rotate(double x_change) {
         rotation_angle = 0.0;
     }
 
-    model_matrix = glm::rotate(glm::mat4{1.0f}, static_cast<float>(rotation_angle), glm::vec3{0.0f, 1.0f, 0.0f});
+    model_matrix = glm::rotate(glm::mat4{1.0f},
+                               static_cast<float>(rotation_angle),
+                               glm::vec3{0.0f, 1.0f, 0.0f});
 }
 
 glm::mat4 Terrain::getModelMatrix() const {

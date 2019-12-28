@@ -18,6 +18,11 @@ Display::Display(int width, int height, float field_of_view, std::string title)
                   -90.0f,
                   -35.0f},
           terrain{nullptr},
+          directional_light{
+                  glm::vec3{1.0f},
+                  0.5f,
+                  glm::vec3{2.0f, -2.0f, -2.0f},
+                  0.7f},
           fractal{nullptr},
           delta_time{0.0},
           last_time_stamp{0.0},
@@ -76,14 +81,17 @@ void Display::update() {
         is_closed = true;
         return;
     }
-
+    directional_light.useLight(shader_program);
     double now = glfwGetTime();
     delta_time = now - last_time_stamp;
     last_time_stamp = now;
 
     renderer.clear();
-    shader_program->setUniformMat4f("u_MVP",
-                                    projection_matrix * camera.calculateViewMatrix() * terrain->getModelMatrix());
+//    shader_program->setUniformMat4f("u_MVP",
+//                                    projection_matrix * camera.calculateViewMatrix() * terrain->getModelMatrix());
+    shader_program->setUniformMat4f("u_Model", terrain->getModelMatrix());
+    shader_program->setUniformMat4f("u_View", camera.calculateViewMatrix());
+    shader_program->setUniformMat4f("u_Projection", projection_matrix);
     renderer.draw(terrain, shader_program);
 
     handleKeyboardInputs();

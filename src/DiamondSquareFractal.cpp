@@ -6,7 +6,6 @@
 
 #include <memory>
 #include <vector>
-#include <algorithm>
 
 DiamondSquareFractal::DiamondSquareFractal()
         : grid_size{129},
@@ -25,12 +24,15 @@ FractalResult DiamondSquareFractal::generate() {
         auto y_float = static_cast<float>(y);
         for (int x = 0; x < grid_size; x++) {
             auto x_float = static_cast<float>(x);
-            vertices->emplace_back(Vertex(
-                    glm::vec3(
+            vertices->emplace_back(Vertex{
+                    glm::vec3{
                             (x_float - (size_float / 2.0f)) * 0.25f,
                             (grid[x][y] / 2.0f) * 1.0f,
-                            (y_float - (size_float / 2.0f)) * 0.25f),
-                    glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
+                            (y_float - (size_float / 2.0f)) * 0.25f
+                    },
+                    glm::vec4{0.0f, 0.0f, 0.0f, 0.0f},
+                    glm::vec3{0.0f, 1.0f, 0.0f}
+            });
         }
     }
 
@@ -57,6 +59,41 @@ FractalResult DiamondSquareFractal::generate() {
             indices->push_back(tr);
             indices->push_back(br);
         }
+    }
+
+    for (int i = 0; i < indices->size(); i += 3) {
+        int index0 = indices->at(i);
+        int index1 = indices->at(i + 1);
+        int index2 = indices->at(i + 2);
+
+        auto& vertex0 = vertices->at(index0);
+        auto& vertex1 = vertices->at(index1);
+        auto& vertex2 = vertices->at(index2);
+
+        auto coord0 = vertex0.coordinates;
+        auto coord1 = vertex1.coordinates;
+        auto coord2 = vertex2.coordinates;
+
+        auto v1 = glm::vec3{coord0.x - coord1.x, coord0.y - coord1.y, coord0.z - coord1.z};
+        auto v2 = glm::vec3{coord0.x - coord2.x, coord0.y - coord2.y, coord0.z - coord2.z};
+
+        auto normal = glm::normalize(glm::cross(v1, v2));
+
+        vertex0.normal.x += normal.x;
+        vertex0.normal.y += normal.y;
+        vertex0.normal.z += normal.z;
+
+        vertex1.normal.x += normal.x;
+        vertex1.normal.y += normal.y;
+        vertex1.normal.z += normal.z;
+
+        vertex2.normal.x += normal.x;
+        vertex2.normal.y += normal.y;
+        vertex2.normal.z += normal.z;
+    }
+
+    for (Vertex &vertex: *vertices) {
+        vertex.normal = glm::normalize(vertex.normal);
     }
 
     auto minmax = std::minmax_element(vertices->begin(), vertices->end(), [](const Vertex &a, const Vertex &b) {

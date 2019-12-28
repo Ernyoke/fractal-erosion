@@ -73,7 +73,9 @@ add_executable(${BINARY}
         MaterialHelper.cpp
         MaterialHelper.h
         Terrain.cpp
-        Terrain.h)
+        Terrain.h
+        Light.cpp
+        Light.h)
 
 target_link_libraries(${BINARY} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
 
