@@ -63,8 +63,15 @@ private:
     double delta_time;
     double last_time_stamp;
 
-    bool show_demo_window;
-    bool show_another_window;
+    float roughness;
+    int grid_size;
+    int seed;
+
+    int wind_erosion_iteration;
+
+    int water_erosion_iteration;
+    float water_quantity;
+
     ImVec4 clear_color;
 
     bool keyboard_keys[1024];

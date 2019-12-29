@@ -36,12 +36,16 @@ Display::Display(int width, int height, float field_of_view, std::string title)
           y_change{0.0},
           mouse_first_moved{true},
           clear_color{ImVec4{0.45f, 0.55f, 0.60f, 1.00f}},
-          show_demo_window{true},
-          show_another_window{false} {
+          roughness{5.0f},
+          grid_size{7},
+          seed{25},
+          wind_erosion_iteration{10},
+          water_erosion_iteration{10},
+          water_quantity{0.1} {
 }
 
 Display::~Display() {
-//    shutDownImgui();
+    shutDownImgui();
     glfwTerminate();
 }
 
@@ -70,7 +74,7 @@ int Display::initialize() {
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     initCallbacks();
-//    initImgui();
+    initImgui();
 
 //    auto future = std::async(std::launch::async, &Display::createFractal, this);
 //    future.get();
@@ -102,8 +106,8 @@ void Display::update() {
     handleKeyboardInputs();
     camera.update();
 
-//    newFrameImgui();
-//    renderImgui();
+    newFrameImgui();
+    renderImgui();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -115,14 +119,10 @@ bool Display::isClosed() const {
 }
 
 void Display::initImgui() {
-    const char *glsl_version = "#version 130";
-
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    (void) io;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 void Display::newFrameImgui() const {
@@ -132,24 +132,40 @@ void Display::newFrameImgui() const {
 }
 
 void Display::renderImgui() {
-    static float f = 0.0f;
-    static int counter = 0;
+    bool wireframe = false;
 
-    ImGui::Begin(
-            "Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+    ImGui::Begin("Fractal Erosion");
 
-    ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-    ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-    ImGui::Checkbox("Another Window", &show_another_window);
+    ImGui::Checkbox("Wireframe", &wireframe);
 
-    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-    ImGui::ColorEdit3("clear color", (float *) &clear_color); // Edit 3 floats representing a color
+    ImGui::Separator();
 
-    if (ImGui::Button(
-            "Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-        counter++;
-    ImGui::SameLine();
-    ImGui::Text("counter = %d", counter);
+    ImGui::BeginGroup();
+    ImGui::Text("Diamond Square");
+    ImGui::SliderFloat("Roughness", &roughness, 0.0f, 10.0f);
+    ImGui::SliderInt("Grid size", &grid_size, 2, 8);
+    ImGui::SliderInt("Seed", &seed, 1, 100);
+    ImGui::Button("Generate");
+    ImGui::EndGroup();
+
+    ImGui::Separator();
+
+    ImGui::BeginGroup();
+    ImGui::Text("Wind Erosion");
+    ImGui::InputInt("Iterations", &wind_erosion_iteration, 1, 100);
+    ImGui::Button("Apply Wind Erosion");
+    ImGui::EndGroup();
+
+    ImGui::Separator();
+
+    ImGui::BeginGroup();
+    ImGui::Text("Water Erosion");
+    ImGui::InputInt("Iterations", &wind_erosion_iteration, 1, 100);
+    ImGui::InputFloat("Water Quantity", &water_quantity, 0.1f, 1.0f);
+    ImGui::Button("Apply Water Erosion");
+    ImGui::EndGroup();
+
+    ImGui::Separator();
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
                 ImGui::GetIO().Framerate);
@@ -228,13 +244,15 @@ void Display::handleKeyboardInputs() {
 }
 
 void Display::handleKeyboardInputCallback(GLFWwindow *window, int key, int code, int action, int mode) {
-    auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
-    if (key >= 0 && key < NUMBER_KEYBOARD_KEYS) {
-        if (action == GLFW_PRESS) {
-            self->keyboard_keys[key] = true;
-        }
-        if (action == GLFW_RELEASE) {
-            self->keyboard_keys[key] = false;
+    if (!ImGui::IsAnyWindowFocused()) {
+        auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
+        if (key >= 0 && key < NUMBER_KEYBOARD_KEYS) {
+            if (action == GLFW_PRESS) {
+                self->keyboard_keys[key] = true;
+            }
+            if (action == GLFW_RELEASE) {
+                self->keyboard_keys[key] = false;
+            }
         }
     }
 }
@@ -255,17 +273,19 @@ void Display::handleMouseMovementCallback(GLFWwindow *window, double x, double y
 }
 
 void Display::handleMouseInputs() {
-    for (int button = 0; button < NUMBER_MOUSE_BUTTONS; button++) {
-        if (mouse_buttons[button]) {
-            switch (button) {
-                case GLFW_MOUSE_BUTTON_RIGHT:
-                case GLFW_MOUSE_BUTTON_LEFT: {
-                    camera.turn(0.0f, y_change);
-                    terrain->rotate(x_change);
-                    break;
-                }
-                default: {
-                    // Do nothing
+    if (!ImGui::IsAnyWindowFocused()) {
+        for (int button = 0; button < NUMBER_MOUSE_BUTTONS; button++) {
+            if (mouse_buttons[button]) {
+                switch (button) {
+                    case GLFW_MOUSE_BUTTON_RIGHT:
+                    case GLFW_MOUSE_BUTTON_LEFT: {
+                        camera.turn(0.0f, y_change);
+                        terrain->rotate(x_change);
+                        break;
+                    }
+                    default: {
+                        // Do nothing
+                    }
                 }
             }
         }
@@ -273,24 +293,28 @@ void Display::handleMouseInputs() {
 }
 
 void Display::handleMouseKeyInputCallback(GLFWwindow *window, int button, int action, int mode) {
-    auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
-    if (button >= 0 && button < NUMBER_MOUSE_BUTTONS) {
-        if (action == GLFW_PRESS) {
-            self->mouse_buttons[button] = true;
-        }
-        if (action == GLFW_RELEASE) {
-            self->mouse_buttons[button] = false;
+    if (!ImGui::IsAnyWindowFocused()) {
+        auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
+        if (button >= 0 && button < NUMBER_MOUSE_BUTTONS) {
+            if (action == GLFW_PRESS) {
+                self->mouse_buttons[button] = true;
+            }
+            if (action == GLFW_RELEASE) {
+                self->mouse_buttons[button] = false;
+            }
         }
     }
 }
 
 void Display::handleMouseScrollInputCallback(GLFWwindow *window, double x, double y) {
-    auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
-    if (y > 0) {
-        self->camera.move_forward(self->delta_time);
-    } else {
-        if (y < 0) {
-            self->camera.move_backward(self->delta_time);
+    if (!ImGui::IsAnyWindowFocused()) {
+        auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
+        if (y > 0) {
+            self->camera.move_forward(self->delta_time);
+        } else {
+            if (y < 0) {
+                self->camera.move_backward(self->delta_time);
+            }
         }
     }
 }
