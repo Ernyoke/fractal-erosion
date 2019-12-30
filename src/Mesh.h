@@ -1,15 +1,15 @@
-#ifndef FRACTALS_FRACTALRESULT_H
-#define FRACTALS_FRACTALRESULT_H
+#ifndef FRACTALS_MESH_H
+#define FRACTALS_MESH_H
 
 #include "Vertex.h"
 
 #include <memory>
 #include <vector>
 
-struct FractalResult {
+struct Mesh {
     std::shared_ptr<std::vector<Vertex>> vertices;
     std::shared_ptr<std::vector<unsigned int>> indices;
 };
 
 
-#endif //FRACTALS_FRACTALRESULT_H
+#endif //FRACTALS_MESH_H

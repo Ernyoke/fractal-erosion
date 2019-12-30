@@ -67,9 +67,9 @@ private:
     int grid_size;
     int seed;
 
-    int wind_erosion_iteration;
+    int thermal_erosion_iterations;
 
-    int water_erosion_iteration;
+    int hydraulic_erosion_iteration;
     float water_quantity;
 
     ImVec4 clear_color;

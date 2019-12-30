@@ -1,24 +1,38 @@
 #ifndef FRACTALS_DIAMONDSQUAREFRACTAL_H
 #define FRACTALS_DIAMONDSQUAREFRACTAL_H
 
+#include "Mesh.h"
 
-#include "FractalResult.h"
+struct Peak {
+    float value;
+    int x;
+    int y;
+
+    Peak(float value, int x, int y) : value{value}, x{x}, y{y} {
+    }
+};
 
 class DiamondSquareFractal {
 public:
-    DiamondSquareFractal();
+    DiamondSquareFractal(int grid_size = 129);
 
     virtual ~DiamondSquareFractal();
 
-    FractalResult generate();
+    Mesh generateMesh();
+
+    void generateGrid(int grid_size, int seed, float noise, float random_min = 0.0f, float random_max = 40.0f);
+
+    void applyThermalErosion();
+
+    void applyHydraulicErosion(float quantity, float sediment_factor);
 
 private:
     int grid_size;
     float **grid;
 
-    void generateGrid(int seed = 2, float random_min = 0.0f, float random_max = 40.0f, float noise = 0.7f);
-
     void cleanUpGrid();
+
+    void applyThermalErosionTonNeighbour(float erosion_height);
 
     std::shared_ptr<std::vector<Vertex>> computeVertices();
 
@@ -28,6 +42,24 @@ private:
                                const std::shared_ptr<std::vector<unsigned int>> &indices);
 
     static void computeTextureColors(std::shared_ptr<std::vector<Vertex>> &vertices);
+
+    bool isPeak(float value, int x, int y, bool upper = true);
+
+    void
+    applyHydraulicErosionFromPeak(const Peak &peak, bool **grid_checked, float sediment_factor, float **water_quantity,
+                                  float **sediment_quantity);
+
+    bool **createGridChecked();
+
+    void cleanUpGridChecked(bool **grid_checked);
+
+    float **initWaterQuantity(float quantity);
+
+    float **initSedimentQuantity(float quantity, float sediment_factor);
+
+    float moveWater(float height, float neighbour_height, float water_quantity, float water_quantity_neighbour);
+
+    void removeExcessWaterFromMargins(float **water_quantity);
 };
 
 

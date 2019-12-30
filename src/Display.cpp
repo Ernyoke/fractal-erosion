@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <future>
+#include <cmath>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -25,7 +26,7 @@ Display::Display(int width, int height, float field_of_view, std::string title)
                   0.5f,
                   glm::vec3{2.0f, -2.0f, -2.0f},
                   0.7f},
-          fractal{nullptr},
+          fractal{std::make_unique<DiamondSquareFractal>()},
           delta_time{0.0},
           last_time_stamp{0.0},
           keyboard_keys{false},
@@ -39,8 +40,8 @@ Display::Display(int width, int height, float field_of_view, std::string title)
           roughness{5.0f},
           grid_size{7},
           seed{25},
-          wind_erosion_iteration{10},
-          water_erosion_iteration{10},
+          thermal_erosion_iterations{10},
+          hydraulic_erosion_iteration{10},
           water_quantity{0.1} {
 }
 
@@ -145,24 +146,44 @@ void Display::renderImgui() {
     ImGui::SliderFloat("Roughness", &roughness, 0.0f, 10.0f);
     ImGui::SliderInt("Grid size", &grid_size, 2, 8);
     ImGui::SliderInt("Seed", &seed, 1, 100);
-    ImGui::Button("Generate");
+    if (ImGui::Button("Generate")) {
+        createFractal();
+    }
     ImGui::EndGroup();
 
     ImGui::Separator();
 
     ImGui::BeginGroup();
-    ImGui::Text("Wind Erosion");
-    ImGui::InputInt("Iterations", &wind_erosion_iteration, 1, 100);
-    ImGui::Button("Apply Wind Erosion");
+    ImGui::Text("Thermal Erosion");
+    ImGui::InputInt("Iterations", &thermal_erosion_iterations, 1, 100);
+    if (ImGui::Button("Apply Thermal Erosion")) {
+        for (int i = 0; i < thermal_erosion_iterations; i++) {
+            fractal->applyThermalErosion();
+        }
+        Mesh mesh = fractal->generateMesh();
+        terrain = std::make_unique<Terrain>(mesh.vertices->data(),
+                                            mesh.vertices->size() * Vertex::SIZE,
+                                            mesh.indices->data(),
+                                            mesh.indices->size());
+    }
     ImGui::EndGroup();
 
     ImGui::Separator();
 
     ImGui::BeginGroup();
-    ImGui::Text("Water Erosion");
-    ImGui::InputInt("Iterations", &wind_erosion_iteration, 1, 100);
+    ImGui::Text("Hydraulic Erosion");
+    ImGui::InputInt("Iterations", &hydraulic_erosion_iteration, 1, 100);
     ImGui::InputFloat("Water Quantity", &water_quantity, 0.1f, 1.0f);
-    ImGui::Button("Apply Water Erosion");
+    if (ImGui::Button("Apply Hydraulic Erosion")) {
+        for (int i = 0; i < hydraulic_erosion_iteration; i++) {
+            fractal->applyHydraulicErosion(water_quantity, 0.5f);
+        }
+        Mesh mesh = fractal->generateMesh();
+        terrain = std::make_unique<Terrain>(mesh.vertices->data(),
+                                            mesh.vertices->size() * Vertex::SIZE,
+                                            mesh.indices->data(),
+                                            mesh.indices->size());
+    }
     ImGui::EndGroup();
 
     ImGui::Separator();
@@ -182,12 +203,12 @@ void Display::shutDownImgui() const {
 }
 
 void Display::createFractal() {
-    fractal = std::make_unique<DiamondSquareFractal>();
-    FractalResult fractal_result = fractal->generate();
-    terrain = std::make_unique<Terrain>(fractal_result.vertices->data(),
-                                        fractal_result.vertices->size() * Vertex::SIZE,
-                                        fractal_result.indices->data(),
-                                        fractal_result.indices->size());
+    fractal->generateGrid(static_cast<int>(std::pow(2, grid_size)) + 1, seed, roughness / 5.0f);
+    Mesh mesh = fractal->generateMesh();
+    terrain = std::make_unique<Terrain>(mesh.vertices->data(),
+                                        mesh.vertices->size() * Vertex::SIZE,
+                                        mesh.indices->data(),
+                                        mesh.indices->size());
 }
 
 void Display::initShaderProgram() {
