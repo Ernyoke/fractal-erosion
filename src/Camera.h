@@ -7,6 +7,10 @@ class Camera {
 public:
     Camera(const glm::vec3 &position, const glm::vec3 &world_up, float yaw, float pitch);
 
+    Camera(const Camera &display) = delete;
+
+    Camera &operator=(const Camera &display) = delete;
+
     virtual ~Camera() = default;
 
     void update();

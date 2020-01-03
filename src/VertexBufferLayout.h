@@ -10,6 +10,10 @@ class VertexBufferLayout {
 public:
     VertexBufferLayout();
 
+    VertexBufferLayout(const VertexBufferLayout &vertex_buffer_layout) = delete;
+
+    VertexBufferLayout &operator=(const VertexBufferLayout &vertex_buffer_layout) = delete;
+
     virtual ~VertexBufferLayout();
 
     template<typename T>

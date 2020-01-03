@@ -8,6 +8,10 @@ class Renderer {
 public:
     Renderer();
 
+    Renderer(const Renderer &renderer) = delete;
+
+    Renderer &operator=(const Renderer &renderer) = delete;
+
     virtual ~Renderer();
 
     void clear() const;

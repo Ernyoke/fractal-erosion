@@ -13,6 +13,10 @@ public:
 
     Light(const glm::vec3 &color, float ambient_intensity, const glm::vec3 &direction, float diffuse_intensity);
 
+    Light(const Light &light) = delete;
+
+    Light &operator=(const Light &light) = delete;
+
     void useLight(const std::unique_ptr<ShaderProgram> &shader_program);
 
 private:

@@ -16,6 +16,10 @@ public:
     Terrain(const void *vertex_data, unsigned int vertex_data_size, const unsigned int *index_data,
             unsigned int count);
 
+    Terrain(const Terrain &terrain) = delete;
+
+    Terrain &operator=(const Terrain &terrain) = delete;
+
     virtual ~Terrain();
 
     void bind() const;
@@ -26,7 +30,7 @@ public:
 
     void rotate(double x_change);
 
-    Material getMaterial() const;
+    [[nodiscard]] Material getMaterial() const;
 
 private:
     std::unique_ptr<VertexArray> vertex_array;

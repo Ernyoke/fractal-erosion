@@ -5,6 +5,10 @@ class VertexBuffer {
 public:
     VertexBuffer(const void *data, unsigned int size);
 
+    VertexBuffer(const VertexBuffer &vertex_buffer) = delete;
+
+    VertexBuffer &operator=(const VertexBuffer &vertex_buffer) = delete;
+
     virtual ~VertexBuffer();
 
     void bind() const;

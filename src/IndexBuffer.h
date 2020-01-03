@@ -5,6 +5,10 @@ class IndexBuffer {
 public:
     IndexBuffer(const unsigned int *data, unsigned int count);
 
+    IndexBuffer(const IndexBuffer &index_buffer) = delete;
+
+    IndexBuffer &operator=(const IndexBuffer &index_buffer) = delete;
+
     virtual ~IndexBuffer();
 
     void bind() const;

@@ -7,6 +7,10 @@
 
 class MaterialHelper {
 public:
+    MaterialHelper(const MaterialHelper &material_helper) = delete;
+
+    MaterialHelper &operator=(const MaterialHelper &material_helper) = delete;
+
     static glm::vec4 getTerrainColorForHeight(float height, float min_height, float max_height);
 
 private:

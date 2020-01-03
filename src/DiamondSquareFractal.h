@@ -3,6 +3,8 @@
 
 #include "Mesh.h"
 
+#include<functional>
+
 struct Peak {
     float value;
     int x;
@@ -14,7 +16,11 @@ struct Peak {
 
 class DiamondSquareFractal {
 public:
-    DiamondSquareFractal(int grid_size = 129);
+    explicit DiamondSquareFractal(int grid_size = 129);
+
+    DiamondSquareFractal(const DiamondSquareFractal &display) = delete;
+
+    DiamondSquareFractal &operator=(const DiamondSquareFractal &display) = delete;
 
     virtual ~DiamondSquareFractal();
 
@@ -30,10 +36,6 @@ private:
     int grid_size;
     float **grid;
 
-    void cleanUpGrid();
-
-    void applyThermalErosionTonNeighbour(float erosion_height);
-
     std::shared_ptr<std::vector<Vertex>> computeVertices();
 
     std::shared_ptr<std::vector<unsigned int>> computeIndices();
@@ -43,23 +45,29 @@ private:
 
     static void computeTextureColors(std::shared_ptr<std::vector<Vertex>> &vertices);
 
+    void applyThermalErosionTonNeighbour(float erosion_height);
+
     bool isPeak(float value, int x, int y, bool upper = true);
 
-    void
-    applyHydraulicErosionFromPeak(const Peak &peak, bool **grid_checked, float sediment_factor, float **water_quantity,
-                                  float **sediment_quantity);
+    void applyHydraulicErosionFromPeak(const Peak &peak, bool **grid_checked, float sediment_factor,
+                                       float **water_quantity, float **sediment_quantity);
 
-    bool **createGridChecked();
-
-    void cleanUpGridChecked(bool **grid_checked);
-
-    float **initWaterQuantity(float quantity);
-
-    float **initSedimentQuantity(float quantity, float sediment_factor);
-
-    float moveWater(float height, float neighbour_height, float water_quantity, float water_quantity_neighbour);
+    static float moveWater(float height, float neighbour_height, float water_quantity, float water_quantity_neighbour);
 
     void removeExcessWaterFromMargins(float **water_quantity);
+
+    int countNeighbours(const Peak &peak);
+
+    bool isMargin(const Peak &peak, int i, int j);
+
+    // utility methods
+    template<typename T>
+    T **createGrid(T default_value);
+
+    template<typename T>
+    void cleanUpGrid(T **grid);
+
+    void traverseGrid(std::function<void(int, int)>);
 };
 
 

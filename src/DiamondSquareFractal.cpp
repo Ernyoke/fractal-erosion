@@ -13,7 +13,7 @@ DiamondSquareFractal::DiamondSquareFractal(int grid_size)
 }
 
 DiamondSquareFractal::~DiamondSquareFractal() {
-    cleanUpGrid();
+    cleanUpGrid<float>(grid);
 }
 
 Mesh DiamondSquareFractal::generateMesh() {
@@ -32,14 +32,7 @@ void DiamondSquareFractal::generateGrid(int grid_size, int seed, float noise, fl
         return;
     }
 
-    grid = new float *[grid_size];
-    for (int i = 0; i < grid_size; i++)
-        grid[i] = new float[grid_size];
-
-    grid[0][0] = 0;
-    grid[s][0] = 0;
-    grid[0][s] = 0;
-    grid[s][s] = 0;
+    grid = createGrid<float>(0);
 
     /*
      * Use temporary named variables to simplify equations
@@ -97,22 +90,12 @@ void DiamondSquareFractal::generateGrid(int grid_size, int seed, float noise, fl
     }
 }
 
-void DiamondSquareFractal::cleanUpGrid() {
-    if (grid) {
-        for (int i = 0; i < grid_size; i++) {
-            delete[] grid[i];
-        }
-        delete[] grid;
-    }
-    grid = nullptr;
-}
-
 void DiamondSquareFractal::applyThermalErosion() {
     if (grid == nullptr) {
         return;
     }
 
-    bool **grid_checked = createGridChecked();
+    bool **grid_checked = createGrid<bool>(false);
 
     float peak = grid[0][0];
     float low = grid[0][0];
@@ -131,7 +114,7 @@ void DiamondSquareFractal::applyThermalErosion() {
     float erosion_height = (peak - low) / 1000.0f;
     applyThermalErosionTonNeighbour(erosion_height);
 
-    cleanUpGridChecked(grid_checked);
+    cleanUpGrid<bool>(grid_checked);
 }
 
 void DiamondSquareFractal::applyHydraulicErosion(float quantity, float sediment_factor) {
@@ -140,7 +123,7 @@ void DiamondSquareFractal::applyHydraulicErosion(float quantity, float sediment_
     }
 
     std::vector<Peak> peaks;
-    bool **grid_checked = createGridChecked();
+    bool **grid_checked = createGrid<bool>(false);
 
     for (int x = 0; x < grid_size; x++) {
         for (int y = 0; y < grid_size; y++) {
@@ -150,33 +133,35 @@ void DiamondSquareFractal::applyHydraulicErosion(float quantity, float sediment_
         }
     }
 
-    float **water_quantity = initWaterQuantity(quantity);
-    float **sediment_quantity = initSedimentQuantity(quantity, sediment_factor);
+    float **water_quantity = createGrid<float>(quantity);
+    float **sediment_quantity = createGrid<float>(quantity * sediment_factor);
 
     for (const auto &peak : peaks) {
         applyHydraulicErosionFromPeak(peak, grid_checked, sediment_factor, water_quantity, sediment_quantity);
     }
     removeExcessWaterFromMargins(water_quantity);
+
+    cleanUpGrid<float>(sediment_quantity);
+    cleanUpGrid<float>(water_quantity);
+    cleanUpGrid<bool>(grid_checked);
 }
 
 std::shared_ptr<std::vector<Vertex>> DiamondSquareFractal::computeVertices() {
     auto vertices = std::make_shared<std::vector<Vertex>>();
     auto size_float = static_cast<float>(grid_size);
-    for (int y = 0; y < grid_size; y++) {
+    traverseGrid([this, &vertices, size_float](int y, int x) {
         auto y_float = static_cast<float>(y);
-        for (int x = 0; x < grid_size; x++) {
-            auto x_float = static_cast<float>(x);
-            vertices->emplace_back(Vertex{
-                    glm::vec3{
-                            (x_float - (size_float / 2.0f)) * 0.25f,
-                            (grid[x][y] / 2.0f) * 1.0f,
-                            (y_float - (size_float / 2.0f)) * 0.25f
-                    },
-                    glm::vec4{0.0f, 0.0f, 0.0f, 0.0f},
-                    glm::vec3{0.0f, 1.0f, 0.0f}
-            });
-        }
-    }
+        auto x_float = static_cast<float>(x);
+        vertices->emplace_back(Vertex{
+                glm::vec3{
+                        (x_float - (size_float / 2.0f)) * 0.25f,
+                        (grid[x][y] / 2.0f) * 1.0f,
+                        (y_float - (size_float / 2.0f)) * 0.25f
+                },
+                glm::vec4{0.0f, 0.0f, 0.0f, 0.0f},
+                glm::vec3{0.0f, 1.0f, 0.0f}
+        });
+    });
     return vertices;
 }
 
@@ -249,28 +234,25 @@ void DiamondSquareFractal::computeTextureColors(std::shared_ptr<std::vector<Vert
 }
 
 void DiamondSquareFractal::applyThermalErosionTonNeighbour(float erosion_height) {
-    for (int x = 0; x < grid_size; x++) {
-        for (int y = 0; y < grid_size; y++) {
-            for (int i = -1; i <= 1; i++) {
-                int position_x = x;
-                int position_y = y;
-                for (int j = -1; j <= 1; j++) {
-                    // check if neighbour is inside the matrix
-                    if (position_x + i >= 0 &&
-                        position_x + i < grid_size &&
-                        position_y + j >= 0 &&
-                        position_y + j < grid_size) {
-                        // check if material needs to be moved to the neighbour
-                        if (grid[position_x + i][position_y + j] < grid[position_x][position_y]) {
-                            grid[position_x + i][position_y + j] += erosion_height;
-                            grid[position_x][position_y] -= erosion_height;
-
-                        }
+    traverseGrid([this, erosion_height](int x, int y) {
+        for (int i = -1; i <= 1; i++) {
+            int position_x = x;
+            int position_y = y;
+            for (int j = -1; j <= 1; j++) {
+                // check if neighbour is inside the matrix
+                if (position_x + i >= 0 &&
+                    position_x + i < grid_size &&
+                    position_y + j >= 0 &&
+                    position_y + j < grid_size) {
+                    // check if material needs to be moved to the neighbour
+                    if (grid[position_x + i][position_y + j] < grid[position_x][position_y]) {
+                        grid[position_x + i][position_y + j] += erosion_height;
+                        grid[position_x][position_y] -= erosion_height;
                     }
                 }
             }
         }
-    }
+    });
 }
 
 bool DiamondSquareFractal::isPeak(float value, int x, int y, bool upper) {
@@ -307,26 +289,14 @@ void DiamondSquareFractal::applyHydraulicErosionFromPeak(const Peak &peak, bool 
                                                          float **water_quantity, float **sediment_quantity) {
     grid_checked[peak.x][peak.y] = true;
 
-    int neighbour_count = 0;
-    for (int i = -1; i <= 1; i++) {
-        for (int j = -1; j <= 1; j++) {
-            if (peak.x + i >= 0 &&
-                peak.x + i < grid_size &&
-                peak.y + j >= 0 &&
-                peak.y + j < grid_size) {
-                if (grid[peak.x + i][peak.y + j] < grid[peak.x][peak.y])
-                    neighbour_count++;
-            }
-        }
-    }
-
+    int neighbour_count = countNeighbours(peak);
     if (neighbour_count == 0) {
         return;
     }
 
-    float Kd = 0.1f;
-    float Kc = 5.0f;
-    float Ks = 0.3f;
+    float kd = 0.1f;
+    float kc = 5.0f;
+    float ks = 0.3f;
 
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
@@ -339,19 +309,11 @@ void DiamondSquareFractal::applyHydraulicErosionFromPeak(const Peak &peak, bool 
                 }
                 // we do this only if the peak is higher
                 if (grid[peak.x][peak.y] > grid[peak.x + i][peak.y + j]) {
-
-                    bool is_margin = false;
-                    if (peak.x + i == 0 ||
-                        peak.x + i == grid_size ||
-                        peak.y + j == 0 ||
-                        peak.y + j == grid_size) {
-                        is_margin = true;
-                    }
-                    if (!is_margin) {
+                    if (!isMargin(peak, i, j)) {
                         // 1. Move water from the peak to the neighbours
                         float height = grid[peak.x][peak.y];
-                        float neighbourHeight = grid[peak.x + i][peak.y + j];
-                        float wt = moveWater(height, neighbourHeight, water_quantity[peak.x][peak.y],
+                        float neighbour_height = grid[peak.x + i][peak.y + j];
+                        float wt = moveWater(height, neighbour_height, water_quantity[peak.x][peak.y],
                                              water_quantity[peak.x + i][peak.y + j]);
 
                         if (wt > 0) {
@@ -362,21 +324,21 @@ void DiamondSquareFractal::applyHydraulicErosionFromPeak(const Peak &peak, bool 
                             grid[peak.x][peak.y] -= wt * sediment_factor;
                             grid[peak.x + i][peak.y + j] += wt * sediment_factor;
 
-                            float cs = Kc * wt;
+                            float cs = kc * wt;
 
                             if (sediment_quantity[peak.x][peak.y] >= cs) {
                                 sediment_quantity[peak.x + i][peak.y + j] += cs;
-                                grid[peak.x][peak.y] += Kd * (sediment_quantity[peak.x][peak.y] - cs);
-                                sediment_quantity[peak.x][peak.y] = (1 - Kd) * (sediment_quantity[peak.x][peak.y] - cs);
+                                grid[peak.x][peak.y] += kd * (sediment_quantity[peak.x][peak.y] - cs);
+                                sediment_quantity[peak.x][peak.y] = (1 - kd) * (sediment_quantity[peak.x][peak.y] - cs);
                             } else {
                                 sediment_quantity[peak.x + i][peak.y + j] +=
                                         sediment_quantity[peak.x][peak.y] +
-                                        Ks * (cs - sediment_quantity[peak.x][peak.y]);
-                                grid[peak.x][peak.y] += -Ks * (cs - sediment_quantity[peak.x][peak.y]);
+                                        ks * (cs - sediment_quantity[peak.x][peak.y]);
+                                grid[peak.x][peak.y] += -ks * (cs - sediment_quantity[peak.x][peak.y]);
                                 sediment_quantity[peak.x][peak.y] = 0;
                             }
                         } else {
-                            grid[peak.x][peak.y] += Ks * sediment_quantity[peak.x][peak.y];
+                            grid[peak.x][peak.y] += ks * sediment_quantity[peak.x][peak.y];
                         }
                     } else {
                         water_quantity[peak.x + i][peak.y + j] = 0;
@@ -392,55 +354,10 @@ void DiamondSquareFractal::applyHydraulicErosionFromPeak(const Peak &peak, bool 
                                                       water_quantity,
                                                       sediment_quantity);
                     }
-
                 }
             }
         }
     }
-
-}
-
-
-bool **DiamondSquareFractal::createGridChecked() {
-    bool **grid_checked = new bool *[grid_size];
-    for (int i = 0; i < grid_size; i++) {
-        grid_checked[i] = new bool[grid_size];
-        for (int j = 0; j < grid_size; j++) {
-            grid_checked[i][j] = false;
-        }
-    }
-    return grid_checked;
-}
-
-void DiamondSquareFractal::cleanUpGridChecked(bool **grid_checked) {
-    if (grid_checked) {
-        for (int i = 0; i < grid_size; i++) {
-            delete[] grid_checked[i];
-        }
-        delete[] grid_checked;
-    }
-}
-
-float **DiamondSquareFractal::initWaterQuantity(float quantity) {
-    auto **water_quantity = new float *[grid_size];
-    for (int i = 0; i < grid_size; i++) {
-        water_quantity[i] = new float[grid_size];
-        for (int j = 0; j < grid_size; j++) {
-            water_quantity[i][j] = quantity;
-        }
-    }
-    return water_quantity;
-}
-
-float **DiamondSquareFractal::initSedimentQuantity(float quantity, float sediment_factor) {
-    auto **sediment_quantity = new float *[grid_size];
-    for (int i = 0; i < grid_size; i++) {
-        sediment_quantity[i] = new float[grid_size];
-        for (int j = 0; j < grid_size; j++) {
-            sediment_quantity[i][j] = quantity * sediment_factor;
-        }
-    }
-    return sediment_quantity;
 }
 
 float DiamondSquareFractal::moveWater(float height, float neighbour_height, float water_quantity,
@@ -450,16 +367,69 @@ float DiamondSquareFractal::moveWater(float height, float neighbour_height, floa
 
 void DiamondSquareFractal::removeExcessWaterFromMargins(float **water_quantity) {
     std::vector<Peak> low_peaks;
-    for (int x = 0; x < grid_size; x++) {
-        for (int y = 0; y < grid_size; y++) {
-            if (isPeak(grid[x][y], x, y, false)) {
-                low_peaks.emplace_back(Peak(grid[x][y], x, y));
+    traverseGrid([this, &low_peaks](int x, int y) {
+        if (isPeak(grid[x][y], x, y, false)) {
+            low_peaks.emplace_back(Peak(grid[x][y], x, y));
+        }
+    });
+    for (const auto &peak : low_peaks) {
+        water_quantity[peak.x][peak.y] = 0.0f;
+    }
+}
+
+int DiamondSquareFractal::countNeighbours(const Peak &peak) {
+    int count = 0;
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            if (peak.x + i >= 0 &&
+                peak.x + i < grid_size &&
+                peak.y + j >= 0 &&
+                peak.y + j < grid_size) {
+                if (grid[peak.x + i][peak.y + j] < grid[peak.x][peak.y])
+                    count++;
             }
         }
     }
+    return count;
+}
 
-    for (const auto &peak : low_peaks) {
-        water_quantity[peak.x][peak.y] = 0.0f;
+bool DiamondSquareFractal::isMargin(const Peak &peak, int i, int j) {
+    return peak.x + i == 0 ||
+           peak.x + i == grid_size ||
+           peak.y + j == 0 ||
+           peak.y + j == grid_size;
+}
+
+// Returns a pointer to a 2D grid of type T with every value initialized to `default_value`.
+template<typename T>
+T **DiamondSquareFractal::createGrid(T default_value) {
+    auto **grid = new T *[grid_size];
+    for (int i = 0; i < grid_size; i++) {
+        grid[i] = new T[grid_size];
+        for (int j = 0; j < grid_size; j++) {
+            grid[i][j] = default_value;
+        }
+    }
+    return grid;
+}
+
+// Cleans up the memory for a 2D grid. The size of the grid is expected to be `grid_size`.
+template<typename T>
+void DiamondSquareFractal::cleanUpGrid(T **grid) {
+    if (grid) {
+        for (int i = 0; i < grid_size; i++) {
+            delete[] grid[i];
+        }
+        delete[] grid;
+    }
+}
+
+// Traverses a 2D grid with the size of `grid_size`. Applies the input function to every element of the grid.
+void DiamondSquareFractal::traverseGrid(std::function<void(int, int)> func) {
+    for (int x = 0; x < grid_size; x++) {
+        for (int y = 0; y < grid_size; y++) {
+            func(x, y);
+        }
     }
 }
 

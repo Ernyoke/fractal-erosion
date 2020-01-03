@@ -9,6 +9,10 @@ class ShaderProgram {
 public:
     ShaderProgram();
 
+    ShaderProgram(const ShaderProgram &shader_program) = delete;
+
+    ShaderProgram &operator=(const ShaderProgram &shader_program) = delete;
+
     virtual ~ShaderProgram();
 
     [[nodiscard]] inline unsigned int getProgramId() const {

@@ -10,6 +10,10 @@ class VertexArray {
 public:
     VertexArray();
 
+    VertexArray(const VertexArray &vertex_array) = delete;
+
+    VertexArray &operator=(const VertexArray &vertex_array) = delete;
+
     virtual ~VertexArray();
 
     void

@@ -7,6 +7,10 @@ class Texture {
 public:
     explicit Texture(std::string path);
 
+    Texture(const Texture &terrain) = delete;
+
+    Texture &operator=(const Texture &terrain) = delete;
+
     virtual ~Texture();
 
     void bind(unsigned int slot = 0) const;

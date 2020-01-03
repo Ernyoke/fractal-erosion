@@ -10,6 +10,10 @@ class Shader {
 public:
     Shader(std::string path, unsigned int shader_type);
 
+    Shader(const Shader &shader) = delete;
+
+    Shader &operator=(const Shader &shader) = delete;
+
     virtual ~Shader() = default;
 
     void compileShader();
