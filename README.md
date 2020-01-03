@@ -1,4 +1,12 @@
-# fractals
+# Fractal Erosion
+
+Procedurally generate terrain using [Diamond-square fractal algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm).
+
+![alt text](./res/other/generate.gif)
+
+Simulate hydraulic and thermal erosion using the procedurally generated terrain.
+
+![alt text](./res/other/erosion.gif)
 
 ### Dependencies
 
@@ -23,4 +31,4 @@ make
 If the build was successfull, in the root folder we should have a binary executable with the name of `fractals`. We can simply execute it as this: `./fractals`.
 
 ## Credits
-* FractalErosionWPF [gitlab](https://gitlab.com/BCBlanka/FractalErosionWPF/tree/master/FractaliWPF/FractaliWPF)
+* FractalErosionWPF: [gitlab](https://gitlab.com/BCBlanka/FractalErosionWPF/tree/master/FractaliWPF/FractaliWPF)
