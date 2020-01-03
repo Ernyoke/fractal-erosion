@@ -116,6 +116,12 @@ private:
 
     void renderImgui();
 
+    void imguiGenerateTerrainGroup();
+
+    void imguiApplyTermalErrosionGroup();
+
+    void imguiApplyHydraulicErosionGroup();
+
     void shutDownImgui() const;
 };
 

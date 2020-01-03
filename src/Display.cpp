@@ -137,50 +137,15 @@ void Display::newFrameImgui() const {
 
 void Display::renderImgui() {
     bool wireframe = false;
-
     ImGui::Begin("Fractal Erosion");
-
     ImGui::Checkbox("Wireframe", &wireframe);
 
     ImGui::Separator();
-
-    ImGui::BeginGroup();
-    ImGui::Text("Diamond Square");
-    ImGui::SliderFloat("Roughness", &roughness, 0.0f, 10.0f);
-    ImGui::SliderInt("Grid size", &grid_size, 2, 8);
-    ImGui::SliderInt("Seed", &seed, 1, 100);
-    if (ImGui::Button("Generate")) {
-        loadTerrain();
-    }
-    ImGui::EndGroup();
-
+    imguiGenerateTerrainGroup();
     ImGui::Separator();
-
-    ImGui::BeginGroup();
-    ImGui::Text("Thermal Erosion");
-    ImGui::InputInt("Iterations", &thermal_erosion_iterations, 1, 100);
-    if (ImGui::Button("Apply Thermal Erosion")) {
-        for (int i = 0; i < thermal_erosion_iterations; i++) {
-            fractal->applyThermalErosion();
-        }
-        loadTerrain();
-    }
-    ImGui::EndGroup();
-
+    imguiApplyTermalErrosionGroup();
     ImGui::Separator();
-
-    ImGui::BeginGroup();
-    ImGui::Text("Hydraulic Erosion");
-    ImGui::InputInt("Iterations", &hydraulic_erosion_iteration, 1, 100);
-    ImGui::InputFloat("Water Quantity", &water_quantity, 0.1f, 1.0f);
-    if (ImGui::Button("Apply Hydraulic Erosion")) {
-        for (int i = 0; i < hydraulic_erosion_iteration; i++) {
-            fractal->applyHydraulicErosion(water_quantity, 0.5f);
-        }
-        loadTerrain();
-    }
-    ImGui::EndGroup();
-
+    imguiApplyHydraulicErosionGroup();
     ImGui::Separator();
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
@@ -189,6 +154,46 @@ void Display::renderImgui() {
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Display::imguiGenerateTerrainGroup() {
+    ImGui::BeginGroup();
+    ImGui::Text("Diamond Square");
+    ImGui::SliderFloat("Roughness", &roughness, 0.0f, 10.0f);
+    ImGui::SliderInt("Grid size", &grid_size, 2, 8);
+    ImGui::SliderInt("Seed", &seed, 1, 100);
+    if (ImGui::Button("Generate")) {
+        fractal->generateGrid(static_cast<int>(std::pow(2, grid_size)) + 1, seed, roughness / 5.0f);
+        loadTerrain();
+    }
+    ImGui::EndGroup();
+}
+
+void Display::imguiApplyTermalErrosionGroup() {
+    ImGui::BeginGroup();
+    ImGui::Text("Thermal Erosion");
+    ImGui::InputInt("Thermal Erosion Iterations", &thermal_erosion_iterations, 1, 100);
+    if (ImGui::Button("Apply Thermal Erosion")) {
+        for (int i = 0; i < thermal_erosion_iterations; i++) {
+            fractal->applyThermalErosion();
+        }
+        loadTerrain();
+    }
+    ImGui::EndGroup();
+}
+
+void Display::imguiApplyHydraulicErosionGroup() {
+    ImGui::BeginGroup();
+    ImGui::Text("Hydraulic Erosion");
+    ImGui::InputInt("Hydraulic Erosion Iterations", &hydraulic_erosion_iteration, 1, 100);
+    ImGui::InputFloat("Water Quantity", &water_quantity, 0.1f, 1.0f);
+    if (ImGui::Button("Apply Hydraulic Erosion")) {
+        for (int i = 0; i < hydraulic_erosion_iteration; i++) {
+            fractal->applyHydraulicErosion(water_quantity, 0.5f);
+        }
+        loadTerrain();
+    }
+    ImGui::EndGroup();
 }
 
 void Display::shutDownImgui() const {
