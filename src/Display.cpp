@@ -77,9 +77,12 @@ int Display::initialize() {
     initCallbacks();
     initImgui();
 
+    // TODO: make this asynchronous
 //    auto future = std::async(std::launch::async, &Display::createFractal, this);
 //    future.get();
-    createFractal();
+    fractal->generateGrid(static_cast<int>(std::pow(2, grid_size)) + 1, seed, roughness / 5.0f);
+    loadTerrain();
+
     initShaderProgram();
 
     return 0;
@@ -147,7 +150,7 @@ void Display::renderImgui() {
     ImGui::SliderInt("Grid size", &grid_size, 2, 8);
     ImGui::SliderInt("Seed", &seed, 1, 100);
     if (ImGui::Button("Generate")) {
-        createFractal();
+        loadTerrain();
     }
     ImGui::EndGroup();
 
@@ -160,11 +163,7 @@ void Display::renderImgui() {
         for (int i = 0; i < thermal_erosion_iterations; i++) {
             fractal->applyThermalErosion();
         }
-        Mesh mesh = fractal->generateMesh();
-        terrain = std::make_unique<Terrain>(mesh.vertices->data(),
-                                            mesh.vertices->size() * Vertex::SIZE,
-                                            mesh.indices->data(),
-                                            mesh.indices->size());
+        loadTerrain();
     }
     ImGui::EndGroup();
 
@@ -178,11 +177,7 @@ void Display::renderImgui() {
         for (int i = 0; i < hydraulic_erosion_iteration; i++) {
             fractal->applyHydraulicErosion(water_quantity, 0.5f);
         }
-        Mesh mesh = fractal->generateMesh();
-        terrain = std::make_unique<Terrain>(mesh.vertices->data(),
-                                            mesh.vertices->size() * Vertex::SIZE,
-                                            mesh.indices->data(),
-                                            mesh.indices->size());
+        loadTerrain();
     }
     ImGui::EndGroup();
 
@@ -202,13 +197,14 @@ void Display::shutDownImgui() const {
     ImGui::DestroyContext();
 }
 
-void Display::createFractal() {
-    fractal->generateGrid(static_cast<int>(std::pow(2, grid_size)) + 1, seed, roughness / 5.0f);
+void Display::loadTerrain() {
     Mesh mesh = fractal->generateMesh();
+    auto rotation_angle = terrain ? terrain->getRotationAngle() : 0.0f;
     terrain = std::make_unique<Terrain>(mesh.vertices->data(),
                                         mesh.vertices->size() * Vertex::SIZE,
                                         mesh.indices->data(),
-                                        mesh.indices->size());
+                                        mesh.indices->size(),
+                                        rotation_angle);
 }
 
 void Display::initShaderProgram() {

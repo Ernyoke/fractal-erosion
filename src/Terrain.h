@@ -14,7 +14,7 @@
 class Terrain {
 public:
     Terrain(const void *vertex_data, unsigned int vertex_data_size, const unsigned int *index_data,
-            unsigned int count);
+            unsigned int count, float rotation_angle);
 
     Terrain(const Terrain &terrain) = delete;
 
@@ -32,6 +32,8 @@ public:
 
     [[nodiscard]] Material getMaterial() const;
 
+    [[nodiscard]] float getRotationAngle() const;
+
 private:
     std::unique_ptr<VertexArray> vertex_array;
     std::unique_ptr<VertexBuffer> vertex_buffer;
@@ -44,6 +46,8 @@ private:
 
     float rotation_angle;
     float rotation_speed;
+
+    void applyRotation();
 };
 
 

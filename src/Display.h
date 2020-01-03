@@ -84,7 +84,7 @@ private:
     bool mouse_first_moved;
 
     // opengl
-    void createFractal();
+    void loadTerrain();
 
     void initShaderProgram();
 
