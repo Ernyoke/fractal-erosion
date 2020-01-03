@@ -2,11 +2,11 @@
 
 Procedurally generate terrain using [Diamond-square fractal algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm).
 
-![alt text](./res/other/generate.gif)
+![alt text](./res/other/generate_resized.gif)
 
 Simulate hydraulic and thermal erosion using the procedurally generated terrain.
 
-![alt text](./res/other/erosion.gif)
+![alt text](./res/other/erosion_resized.gif)
 
 ### Dependencies
 
