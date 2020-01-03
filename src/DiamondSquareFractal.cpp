@@ -149,19 +149,21 @@ void DiamondSquareFractal::applyHydraulicErosion(float quantity, float sediment_
 std::shared_ptr<std::vector<Vertex>> DiamondSquareFractal::computeVertices() {
     auto vertices = std::make_shared<std::vector<Vertex>>();
     auto size_float = static_cast<float>(grid_size);
-    traverseGrid([this, &vertices, size_float](int y, int x) {
+    for (int y = 0; y < grid_size; y++) {
         auto y_float = static_cast<float>(y);
-        auto x_float = static_cast<float>(x);
-        vertices->emplace_back(Vertex{
-                glm::vec3{
-                        (x_float - (size_float / 2.0f)) * 0.25f,
-                        (grid[x][y] / 2.0f) * 1.0f,
-                        (y_float - (size_float / 2.0f)) * 0.25f
-                },
-                glm::vec4{0.0f, 0.0f, 0.0f, 0.0f},
-                glm::vec3{0.0f, 1.0f, 0.0f}
-        });
-    });
+        for (int x = 0; x < grid_size; x++) {
+            auto x_float = static_cast<float>(x);
+            vertices->emplace_back(Vertex{
+                    glm::vec3{
+                            (x_float - (size_float / 2.0f)) * 0.25f,
+                            (grid[x][y] / 2.0f) * 1.0f,
+                            (y_float - (size_float / 2.0f)) * 0.25f
+                    },
+                    glm::vec4{0.0f, 0.0f, 0.0f, 0.0f},
+                    glm::vec3{0.0f, 1.0f, 0.0f}
+            });
+        }
+    }
     return vertices;
 }
 
@@ -234,25 +236,28 @@ void DiamondSquareFractal::computeTextureColors(std::shared_ptr<std::vector<Vert
 }
 
 void DiamondSquareFractal::applyThermalErosionTonNeighbour(float erosion_height) {
-    traverseGrid([this, erosion_height](int x, int y) {
-        for (int i = -1; i <= 1; i++) {
-            int position_x = x;
-            int position_y = y;
-            for (int j = -1; j <= 1; j++) {
-                // check if neighbour is inside the matrix
-                if (position_x + i >= 0 &&
-                    position_x + i < grid_size &&
-                    position_y + j >= 0 &&
-                    position_y + j < grid_size) {
-                    // check if material needs to be moved to the neighbour
-                    if (grid[position_x + i][position_y + j] < grid[position_x][position_y]) {
-                        grid[position_x + i][position_y + j] += erosion_height;
-                        grid[position_x][position_y] -= erosion_height;
+    for (int x = 0; x < grid_size; x++) {
+        for (int y = 0; y < grid_size; y++) {
+            for (int i = -1; i <= 1; i++) {
+                int position_x = x;
+                int position_y = y;
+                for (int j = -1; j <= 1; j++) {
+                    // check if neighbour is inside the matrix
+                    if (position_x + i >= 0 &&
+                        position_x + i < grid_size &&
+                        position_y + j >= 0 &&
+                        position_y + j < grid_size) {
+                        // check if material needs to be moved to the neighbour
+                        if (grid[position_x + i][position_y + j] < grid[position_x][position_y]) {
+                            grid[position_x + i][position_y + j] += erosion_height;
+                            grid[position_x][position_y] -= erosion_height;
+
+                        }
                     }
                 }
             }
         }
-    });
+    }
 }
 
 bool DiamondSquareFractal::isPeak(float value, int x, int y, bool upper) {
@@ -367,11 +372,14 @@ float DiamondSquareFractal::moveWater(float height, float neighbour_height, floa
 
 void DiamondSquareFractal::removeExcessWaterFromMargins(float **water_quantity) {
     std::vector<Peak> low_peaks;
-    traverseGrid([this, &low_peaks](int x, int y) {
-        if (isPeak(grid[x][y], x, y, false)) {
-            low_peaks.emplace_back(Peak(grid[x][y], x, y));
+    for (int x = 0; x < grid_size; x++) {
+        for (int y = 0; y < grid_size; y++) {
+            if (isPeak(grid[x][y], x, y, false)) {
+                low_peaks.emplace_back(Peak(grid[x][y], x, y));
+            }
         }
-    });
+    }
+
     for (const auto &peak : low_peaks) {
         water_quantity[peak.x][peak.y] = 0.0f;
     }
@@ -421,15 +429,6 @@ void DiamondSquareFractal::cleanUpGrid(T **grid) {
             delete[] grid[i];
         }
         delete[] grid;
-    }
-}
-
-// Traverses a 2D grid with the size of `grid_size`. Applies the input function to every element of the grid.
-void DiamondSquareFractal::traverseGrid(std::function<void(int, int)> func) {
-    for (int x = 0; x < grid_size; x++) {
-        for (int y = 0; y < grid_size; y++) {
-            func(x, y);
-        }
     }
 }
 

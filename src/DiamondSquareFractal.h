@@ -66,8 +66,6 @@ private:
 
     template<typename T>
     void cleanUpGrid(T **grid);
-
-    void traverseGrid(std::function<void(int, int)>);
 };
 
 
