@@ -9,9 +9,9 @@
 
 #include <glm/glm.hpp>
 
-#include "libs/imgui/imgui.h"
-#include "libs/imgui/imgui_impl_glfw.h"
-#include "libs/imgui/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 #include "Camera.h"
 #include "DiamondSquareFractal.h"

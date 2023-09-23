@@ -1,7 +1,7 @@
 #include "Texture.h"
 
 #include "ErrorHandler.h"
-#include "libs/stb/stb_image.h"
+#include "stb_image.h"
 
 #include <GL/glew.h>
 

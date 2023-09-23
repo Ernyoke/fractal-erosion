@@ -266,7 +266,7 @@ void Display::handleKeyboardInputs() {
 }
 
 void Display::handleKeyboardInputCallback(GLFWwindow *window, int key, int code, int action, int mode) {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
         if (key >= 0 && key < NUMBER_KEYBOARD_KEYS) {
             if (action == GLFW_PRESS) {
@@ -295,7 +295,7 @@ void Display::handleMouseMovementCallback(GLFWwindow *window, double x, double y
 }
 
 void Display::handleMouseInputs() {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         for (int button = 0; button < NUMBER_MOUSE_BUTTONS; button++) {
             if (mouse_buttons[button]) {
                 switch (button) {
@@ -315,7 +315,7 @@ void Display::handleMouseInputs() {
 }
 
 void Display::handleMouseKeyInputCallback(GLFWwindow *window, int button, int action, int mode) {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
         if (button >= 0 && button < NUMBER_MOUSE_BUTTONS) {
             if (action == GLFW_PRESS) {
@@ -329,7 +329,7 @@ void Display::handleMouseKeyInputCallback(GLFWwindow *window, int button, int ac
 }
 
 void Display::handleMouseScrollInputCallback(GLFWwindow *window, double x, double y) {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
         if (y > 0) {
             self->camera.move_forward(self->delta_time);
