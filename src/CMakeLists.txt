@@ -1,3 +1,4 @@
+include(CMakeRC.cmake)
 find_package(OpenGL REQUIRED)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/external/glew-cmake build-glew-cmake)
@@ -9,6 +10,8 @@ include_directories(${IMGUI_DIR} ${IMGUI_DIR}/backends src)
 
 set(STB_DIR ../external/stb)
 include_directories(${STB_DIR} src)
+
+cmrc_add_resource_library(shaders shaders/fragment.shader shaders/vertex.shader)
 
 add_executable(${PROJECT_NAME}
         Main.cpp
@@ -71,9 +74,10 @@ target_include_directories(${PROJECT_NAME}
 target_link_directories(${PROJECT_NAME}
         PRIVATE ${CMAKE_SOURCE_DIR}/build/external/glew-cmake/lib)
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
         glm
-        libglew_static)
+        libglew_static
+        shaders)
 
 add_library(${CMAKE_PROJECT_NAME}-lib STATIC MathHelper.cpp MathHelper.h)

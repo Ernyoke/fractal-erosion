@@ -17,9 +17,7 @@ public:
     virtual ~VertexBufferLayout();
 
     template<typename T>
-    void push(unsigned int count) {
-//        static_assert(false);
-    }
+    void push(unsigned int count);
 
     [[nodiscard]] inline unsigned int getStride() const {
         return stride;
