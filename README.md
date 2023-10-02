@@ -19,11 +19,28 @@ Simulate hydraulic and thermal erosion using the procedurally generated terrain.
 In oder to build we should install build dependencies above. The project expects that we have a C++2a compiler.
 
 ### Build for Ubuntu 18.04 and above (tested with gcc 9.2.1)
+
 ```
 mkdir build
 cd build
 cmake ..
 make
+```
+
+## MacOS
+
+### Prerequisites
+
+- CMake 3.26 or newer
+- gcc or clang
+
+### Run the following commands from a terminal:
+
+```shell
+git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fractal-erosion.git
+mdkir build
+cmake . -B build
+cd build && make
 ```
 
 ## Building for Windows with MSVC
@@ -33,9 +50,9 @@ make
 - Visual Studio 2022 (Community Edition should work just fine)
 - CMake 3.26 or newer
 
-Run the following commands from PowerShell.
+### Run the following commands from PowerShell:
 
-```
+```shell
 git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fractal-erosion.git
 mdkir build
 cmake . -G "Visual Studio 17 2022" -A x64 -B build
@@ -44,7 +61,7 @@ msbuild.exe ALL_BUILD.vcxproj /p:configuration=release /p:platform=x64
 
 With Visual Studio 2022 `msbuild.exe` is installed automatically. The default location for this is usually `Program Files/Microsoft Visual Studio`. In case the `msbuild` executable is not present on the path, we can execute it as follows:
 
-```
+```shell
 & 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\msbuild.exe` ALL_BUILD.vcxproj /p:configuration=release /p:platform=x64
 ```
 
