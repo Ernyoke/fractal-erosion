@@ -28,9 +28,15 @@ make
 
 ## Building for Windows with MSVC
 
+### Prerequisites
+
+- Visual Studio 2022 (Community Edition should work just fine)
+- CMake 3.26 or newer
+
 Run the following commands from PowerShell.
 
 ```
+git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fractal-erosion.git
 mdkir build
 cmake . -G "Visual Studio 17 2022" -A x64 -B build
 msbuild.exe ALL_BUILD.vcxproj /p:configuration=release /p:platform=x64
