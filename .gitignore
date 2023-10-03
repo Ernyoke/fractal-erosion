@@ -3,6 +3,7 @@
 
 # cmake
 cmake-build-debug
+cmake-build-debug-visual-studio
 
 # Binaries
 fractals
@@ -16,3 +17,4 @@ imgui.ini
 
 # build
 build
+bin

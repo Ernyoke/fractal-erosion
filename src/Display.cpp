@@ -4,8 +4,12 @@
 #include <iostream>
 #include <future>
 #include <cmath>
+#include <filesystem>
 
+#include <cmrc/cmrc.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+CMRC_DECLARE(shaders);
 
 Display::Display(int width, int height, float field_of_view, std::string title)
         : width{width},
@@ -213,13 +217,19 @@ void Display::loadTerrain() {
 }
 
 void Display::initShaderProgram() {
+    auto fs = cmrc::shaders::get_filesystem();
+
     shader_program = std::make_unique<ShaderProgram>();
 
-    Shader vertex_shader("./res/shaders/vertex.shader", GL_VERTEX_SHADER);
+    auto vertex_shader_file = fs.open("shaders/vertex.shader");
+    Shader vertex_shader(std::string(vertex_shader_file.begin(), vertex_shader_file.end()),
+                         GL_VERTEX_SHADER);
     vertex_shader.compileShader();
     vertex_shader.attachShader(shader_program);
 
-    Shader fragment_shader("./res/shaders/fragment.shader", GL_FRAGMENT_SHADER);
+    auto fragment_shader_file = fs.open("shaders/fragment.shader");
+    Shader fragment_shader(std::string(fragment_shader_file.begin(), fragment_shader_file.end()),
+                           GL_FRAGMENT_SHADER);
     fragment_shader.compileShader();
     fragment_shader.attachShader(shader_program);
 
@@ -266,7 +276,7 @@ void Display::handleKeyboardInputs() {
 }
 
 void Display::handleKeyboardInputCallback(GLFWwindow *window, int key, int code, int action, int mode) {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
         if (key >= 0 && key < NUMBER_KEYBOARD_KEYS) {
             if (action == GLFW_PRESS) {
@@ -295,7 +305,7 @@ void Display::handleMouseMovementCallback(GLFWwindow *window, double x, double y
 }
 
 void Display::handleMouseInputs() {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         for (int button = 0; button < NUMBER_MOUSE_BUTTONS; button++) {
             if (mouse_buttons[button]) {
                 switch (button) {
@@ -315,7 +325,7 @@ void Display::handleMouseInputs() {
 }
 
 void Display::handleMouseKeyInputCallback(GLFWwindow *window, int button, int action, int mode) {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
         if (button >= 0 && button < NUMBER_MOUSE_BUTTONS) {
             if (action == GLFW_PRESS) {
@@ -329,7 +339,7 @@ void Display::handleMouseKeyInputCallback(GLFWwindow *window, int button, int ac
 }
 
 void Display::handleMouseScrollInputCallback(GLFWwindow *window, double x, double y) {
-    if (!ImGui::IsAnyWindowFocused()) {
+    if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
         auto *self = static_cast<Display *>(glfwGetWindowUserPointer(window));
         if (y > 0) {
             self->camera.move_forward(self->delta_time);

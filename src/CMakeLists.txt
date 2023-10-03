@@ -1,42 +1,19 @@
-set(BINARY ${CMAKE_PROJECT_NAME})
-
-set(SOURCES ${SOURCES})
-
-# OpenGL
+include(CMakeRC.cmake)
 find_package(OpenGL REQUIRED)
 
-# PkgConfig
-find_package(PkgConfig REQUIRED)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/glew-cmake build-glew-cmake)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/glfw build-glfw)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/glm build-glm)
 
-# GLEW
-find_package(GLEW REQUIRED)
+set(IMGUI_DIR ../external/imgui)
+include_directories(${IMGUI_DIR} ${IMGUI_DIR}/backends src)
 
-# GLFW
-pkg_search_module(GLFW REQUIRED glfw3)
-message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
+set(STB_DIR ../external/stb)
+include_directories(${STB_DIR} src)
 
-# glm
-find_package(glm REQUIRED)
+cmrc_add_resource_library(shaders shaders/fragment.shader shaders/vertex.shader)
 
-include_directories(${GLFW_INCLUDE_DIRS}, ${OPENGL_INCLUDE_DIR}, $(GLEW_INCLUDE_DIRS))
-
-add_executable(${BINARY}
-        libs/stb/stb_image.h
-        libs/stb/stb_image.cpp
-        libs/imgui/imconfig.h
-        libs/imgui/imgui.h
-        libs/imgui/imgui.cpp
-        libs/imgui/imgui_demo.cpp
-        libs/imgui/imgui_draw.cpp
-        libs/imgui/imgui_internal.h
-        libs/imgui/imgui_widgets.cpp
-        libs/imgui/imgui_impl_glfw.h
-        libs/imgui/imgui_impl_glfw.cpp
-        libs/imgui/imgui_impl_opengl3.h
-        libs/imgui/imgui_impl_opengl3.cpp
-        libs/imgui/imstb_rectpack.h
-        libs/imgui/imstb_textedit.h
-        libs/imgui/imstb_truetype.h
+add_executable(${PROJECT_NAME}
         Main.cpp
         Camera.cpp
         Camera.h
@@ -77,8 +54,30 @@ add_executable(${BINARY}
         Light.cpp
         Light.h
         Material.cpp
-        Material.h)
+        Material.h
+        ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+        ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+        ${IMGUI_DIR}/imgui.cpp
+        ${IMGUI_DIR}/imgui_draw.cpp
+        ${IMGUI_DIR}/imgui_demo.cpp
+        ${IMGUI_DIR}/imgui_tables.cpp
+        ${IMGUI_DIR}/imgui_widgets.cpp
+        ${STB_DIR}/stb_image.h
+        ${STB_DIR}/stb_image.cpp
+)
 
-target_link_libraries(${BINARY} ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} pthread)
+target_include_directories(${PROJECT_NAME}
+        PRIVATE ${CMAKE_SOURCE_DIR}/external/build/glew-cmake/include
+        PRIVATE ${CMAKE_SOURCE_DIR}/external/build/glfw/include
+        PRIVATE $${CMAKE_SOURCE_DIR}/external/build/glm/include)
 
-add_library(${BINARY}_lib STATIC MathHelper.cpp MathHelper.h)
+target_link_directories(${PROJECT_NAME}
+        PRIVATE ${CMAKE_SOURCE_DIR}/build/external/glew-cmake/lib)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+        glfw
+        glm
+        libglew_static
+        shaders)
+
+add_library(${CMAKE_PROJECT_NAME}-lib STATIC MathHelper.cpp MathHelper.h)

@@ -1,4 +1,4 @@
-#include <bits/unique_ptr.h>
+#include <memory>
 #include "VertexArray.h"
 
 #include "ErrorHandler.h"

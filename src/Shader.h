@@ -8,7 +8,7 @@
 
 class Shader {
 public:
-    Shader(std::string path, unsigned int shader_type);
+    Shader(std::string source, unsigned int shader_type);
 
     Shader(const Shader &shader) = delete;
 
@@ -21,11 +21,10 @@ public:
     void attachShader(const std::unique_ptr<ShaderProgram> &shaderProgram);
 
 private:
-    std::string path;
     unsigned int shader_type;
     unsigned int renderer_id;
 
-    std::string parseShader();
+    std::string source;
 };
 
 
