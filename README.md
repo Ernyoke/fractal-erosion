@@ -18,14 +18,20 @@ Simulate hydraulic and thermal erosion using the procedurally generated terrain.
 
 In oder to build we should install build dependencies above. The project expects that we have a C++2a compiler.
 
-### Build for Ubuntu 18.04 and above (tested with gcc 9.2.1)
+### Build for Ubuntu - tested with gcc (Ubuntu 12.3.0-1ubuntu1~23.04) 12.3.0
+
+### Prerequisites
+
+- CMake 3.25 or newer
+- gcc
 
 ```
-mkdir build
-cd build
-cmake ..
-make
+sudo apt-get install xorg-dev libglu1-mesa-dev
+./configure
+./build
 ```
+
+The output of cmake will be stored in the `build` folder. The executable binaries will be stored in the `bin` folder.
 
 ## MacOS
 
