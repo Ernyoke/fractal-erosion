@@ -8,12 +8,11 @@ Renderer::Renderer() = default;
 
 Renderer::~Renderer() = default;
 
-void Renderer::clear() const {
+void Renderer::clear() {
     glCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
-void
-Renderer::draw(const std::unique_ptr<Terrain> &terrain, const std::unique_ptr<ShaderProgram> &shader_program) const {
+void Renderer::draw(const std::unique_ptr<Terrain> &terrain, const std::unique_ptr<ShaderProgram> &shader_program) {
     glCall(glEnable(GL_DEPTH_TEST));
     glCall(glDepthFunc(GL_LEQUAL));
 

@@ -18,7 +18,7 @@ public:
 
     void compileShader();
 
-    void attachShader(const std::unique_ptr<ShaderProgram> &shaderProgram);
+    void attachShader(const std::unique_ptr<ShaderProgram> &shaderProgram) const;
 
 private:
     unsigned int shader_type;

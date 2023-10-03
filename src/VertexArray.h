@@ -16,7 +16,7 @@ public:
 
     virtual ~VertexArray();
 
-    void
+    static void
     addBuffer(const std::unique_ptr<VertexBuffer> &vertex_buffer,
               const std::unique_ptr<VertexBufferLayout> &vertex_buffer_layout);
 

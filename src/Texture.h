@@ -5,7 +5,7 @@
 
 class Texture {
 public:
-    explicit Texture(std::string path);
+    explicit Texture(const std::string& path);
 
     Texture(const Texture &terrain) = delete;
 

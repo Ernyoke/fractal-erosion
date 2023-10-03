@@ -21,7 +21,7 @@ Terrain::Terrain(const void *vertex_data, unsigned int vertex_data_size, const u
     // we expect that the layout for the vertex data is vec3 of floats for the indices
     vertex_buffer_layout->push<float>(3);
 
-    // we expect that the layout for for the color information is vec4 with floats for RGBA channels
+    // we expect that the layout for the color information is vec4 with floats for RGBA channels
     vertex_buffer_layout->push<float>(4);
 
     // we expect that the layout for the normal is a vec4 of floats
@@ -30,7 +30,7 @@ Terrain::Terrain(const void *vertex_data, unsigned int vertex_data_size, const u
     // attach the vertex buffer and
     vertex_array->addBuffer(vertex_buffer, vertex_buffer_layout);
 
-    // applies rotation the the model matrix
+    // applies rotation the model matrix
     applyRotation();
 }
 

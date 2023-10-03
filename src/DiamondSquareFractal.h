@@ -38,7 +38,7 @@ private:
 
     std::shared_ptr<std::vector<Vertex>> computeVertices();
 
-    std::shared_ptr<std::vector<unsigned int>> computeIndices();
+    [[nodiscard]] std::shared_ptr<std::vector<unsigned int>> computeIndices() const;
 
     static void computeNormals(std::shared_ptr<std::vector<Vertex>> &vertices,
                                const std::shared_ptr<std::vector<unsigned int>> &indices);
@@ -58,7 +58,7 @@ private:
 
     int countNeighbours(const Peak &peak);
 
-    bool isMargin(const Peak &peak, int i, int j);
+    [[nodiscard]] bool isMargin(const Peak &peak, int i, int j) const;
 
     // utility methods
     template<typename T>

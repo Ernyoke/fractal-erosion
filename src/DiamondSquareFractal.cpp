@@ -128,7 +128,7 @@ void DiamondSquareFractal::applyHydraulicErosion(float quantity, float sediment_
     for (int x = 0; x < grid_size; x++) {
         for (int y = 0; y < grid_size; y++) {
             if (isPeak(grid[x][y], x, y)) {
-                peaks.emplace_back(Peak{grid[x][y], x, y});
+                peaks.emplace_back(grid[x][y], x, y);
             }
         }
     }
@@ -153,7 +153,7 @@ std::shared_ptr<std::vector<Vertex>> DiamondSquareFractal::computeVertices() {
         auto y_float = static_cast<float>(y);
         for (int x = 0; x < grid_size; x++) {
             auto x_float = static_cast<float>(x);
-            vertices->emplace_back(Vertex{
+            vertices->emplace_back(
                     glm::vec3{
                             (x_float - (size_float / 2.0f)) * 0.25f,
                             (grid[x][y] / 2.0f) * 1.0f,
@@ -161,13 +161,13 @@ std::shared_ptr<std::vector<Vertex>> DiamondSquareFractal::computeVertices() {
                     },
                     glm::vec4{0.0f, 0.0f, 0.0f, 0.0f},
                     glm::vec3{0.0f, 1.0f, 0.0f}
-            });
+            );
         }
     }
     return vertices;
 }
 
-std::shared_ptr<std::vector<unsigned int>> DiamondSquareFractal::computeIndices() {
+std::shared_ptr<std::vector<unsigned int>> DiamondSquareFractal::computeIndices() const {
     auto indices = std::make_shared<std::vector<unsigned int>>();
 
     for (int y = 0; y < grid_size - 1; y++) {
@@ -375,7 +375,7 @@ void DiamondSquareFractal::removeExcessWaterFromMargins(float **water_quantity) 
     for (int x = 0; x < grid_size; x++) {
         for (int y = 0; y < grid_size; y++) {
             if (isPeak(grid[x][y], x, y, false)) {
-                low_peaks.emplace_back(Peak(grid[x][y], x, y));
+                low_peaks.emplace_back(grid[x][y], x, y);
             }
         }
     }
@@ -401,7 +401,7 @@ int DiamondSquareFractal::countNeighbours(const Peak &peak) {
     return count;
 }
 
-bool DiamondSquareFractal::isMargin(const Peak &peak, int i, int j) {
+bool DiamondSquareFractal::isMargin(const Peak &peak, int i, int j) const {
     return peak.x + i == 0 ||
            peak.x + i == grid_size ||
            peak.y + j == 0 ||

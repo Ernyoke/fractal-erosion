@@ -32,7 +32,7 @@ void Shader::compileShader() {
     }
 }
 
-void Shader::attachShader(const std::unique_ptr<ShaderProgram> &shaderProgram) {
+void Shader::attachShader(const std::unique_ptr<ShaderProgram> &shaderProgram) const {
     unsigned int shader_program_id = shaderProgram->getProgramId();
 
     if (renderer_id) {

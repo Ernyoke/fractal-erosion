@@ -5,7 +5,7 @@
 
 #include <GL/glew.h>
 
-Texture::Texture(std::string path) : path{path},
+Texture::Texture(const std::string& path) : path{path},
                                      local_buffer{nullptr},
                                      width{0},
                                      height{0},

@@ -133,7 +133,7 @@ void Display::initImgui() {
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
-void Display::newFrameImgui() const {
+void Display::newFrameImgui() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -200,7 +200,7 @@ void Display::imguiApplyHydraulicErosionGroup() {
     ImGui::EndGroup();
 }
 
-void Display::shutDownImgui() const {
+void Display::shutDownImgui() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

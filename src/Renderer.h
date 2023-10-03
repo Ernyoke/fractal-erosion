@@ -14,9 +14,9 @@ public:
 
     virtual ~Renderer();
 
-    void clear() const;
+    static void clear() ;
 
-    void draw(const std::unique_ptr<Terrain> &terrain, const std::unique_ptr<ShaderProgram> &shader_program) const;
+    static void draw(const std::unique_ptr<Terrain> &terrain, const std::unique_ptr<ShaderProgram> &shader_program) ;
 };
 
 

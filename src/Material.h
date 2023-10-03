@@ -9,7 +9,7 @@ class Material {
 public:
     Material(float specular_intensity, float shininess);
 
-    void useMaterial(const std::unique_ptr<ShaderProgram> &shader_program);
+    void useMaterial(const std::unique_ptr<ShaderProgram> &shader_program) const;
 
 private:
     float specular_intensity;

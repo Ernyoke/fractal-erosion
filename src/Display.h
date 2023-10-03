@@ -112,7 +112,7 @@ private:
     // imgui
     void initImgui();
 
-    void newFrameImgui() const;
+    static void newFrameImgui() ;
 
     void renderImgui();
 
@@ -122,7 +122,7 @@ private:
 
     void imguiApplyHydraulicErosionGroup();
 
-    void shutDownImgui() const;
+    static void shutDownImgui() ;
 };
 
 
