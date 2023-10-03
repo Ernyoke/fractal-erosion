@@ -8,17 +8,11 @@ Simulate hydraulic and thermal erosion using the procedurally generated terrain.
 
 ![alt text](./res/other/erosion_resized.gif)
 
-### Dependencies
-
-* glfw `sudo apt install glfw-dec`
-* glew `sudo apt install libglew-dev`
-* glm `sudo apt install libglm-dev`
-
 ## Build
 
-In oder to build we should install build dependencies above. The project expects that we have a C++2a compiler.
+The project expects that we have a C++2a compiler.
 
-### Build for Ubuntu - tested with gcc (Ubuntu 12.3.0-1ubuntu1~23.04) 12.3.0
+### Ubuntu - tested with gcc (Ubuntu 12.3.0-1ubuntu1~23.04) 12.3.0
 
 ### Prerequisites
 
@@ -49,9 +43,8 @@ The output of cmake will be stored in the `build` folder. The executable binarie
 
 ```shell
 git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fractal-erosion.git
-mdkir build
-cmake . -B build
-cd build && make
+./configure
+./build
 ```
 
 ## Building for Windows with MSVC
@@ -77,7 +70,6 @@ With Visual Studio 2022 `msbuild.exe` is installed automatically. The default lo
 ```shell
 & 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\msbuild.exe` ALL_BUILD.vcxproj /p:configuration=release /p:platform=x64
 ```
-
 
 ## Running the application
 
