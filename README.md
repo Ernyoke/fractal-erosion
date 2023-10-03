@@ -12,7 +12,7 @@ Simulate hydraulic and thermal erosion using the procedurally generated terrain.
 
 The project expects that we have a C++2a compiler.
 
-### Ubuntu - tested with gcc (Ubuntu 12.3.0-1ubuntu1~23.04) 12.3.0
+## Ubuntu - tested with gcc (Ubuntu 12.3.0-1ubuntu1~23.04) 12.3.0
 
 ### Prerequisites
 
@@ -47,7 +47,7 @@ git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fracta
 ./build
 ```
 
-## Building for Windows with MSVC
+## Windows - tested with MSVC
 
 ### Prerequisites
 
