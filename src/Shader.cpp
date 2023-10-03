@@ -15,17 +15,6 @@ Shader::Shader(std::string source, unsigned int shader_type)
           renderer_id{0} {
 }
 
-//std::string Shader::parseShader() {
-//    std::ifstream stream(path);
-//
-//    std::string line;
-//    std::stringstream string_stream;
-//    while (getline(stream, line)) {
-//        string_stream << line << std::endl;
-//    }
-//    return string_stream.str();
-//}
-
 void Shader::compileShader() {
     renderer_id = glCreateShader(shader_type);
     const char *src = source.c_str();

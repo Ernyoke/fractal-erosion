@@ -25,8 +25,6 @@ private:
     unsigned int renderer_id;
 
     std::string source;
-
-    std::string parseShader();
 };
 
 

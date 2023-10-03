@@ -25,7 +25,10 @@ In oder to build we should install build dependencies above. The project expects
 - CMake 3.25 or newer
 - gcc
 
+### Run the following commands from a terminal:
+
 ```
+git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fractal-erosion.git
 sudo apt-get install xorg-dev libglu1-mesa-dev
 ./configure
 ./build
@@ -39,6 +42,8 @@ The output of cmake will be stored in the `build` folder. The executable binarie
 
 - CMake 3.26 or newer
 - gcc or clang
+
+The output of cmake will be stored in the `build` folder. The executable binaries will be stored in the `bin` folder.
 
 ### Run the following commands from a terminal:
 
@@ -64,6 +69,8 @@ mdkir build
 cmake . -G "Visual Studio 17 2022" -A x64 -B build
 msbuild.exe ALL_BUILD.vcxproj /p:configuration=release /p:platform=x64
 ```
+
+The output of cmake will be stored in the `build` folder. The executable binaries will be stored in the `bin` folder.
 
 With Visual Studio 2022 `msbuild.exe` is installed automatically. The default location for this is usually `Program Files/Microsoft Visual Studio`. In case the `msbuild` executable is not present on the path, we can execute it as follows:
 
