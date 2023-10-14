@@ -24,8 +24,8 @@ The project expects that we have a C++2a compiler.
 ```
 git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fractal-erosion.git
 sudo apt-get install xorg-dev libglu1-mesa-dev
-./configure
-./build
+./configure.sh
+./build.sh
 ```
 
 The output of cmake will be stored in the `build` folder. The executable binaries will be stored in the `bin` folder.
@@ -43,8 +43,8 @@ The output of cmake will be stored in the `build` folder. The executable binarie
 
 ```shell
 git clone --recurse-submodules --remote-submodules git@github.com:Ernyoke/fractal-erosion.git
-./configure
-./build
+./configure.sh
+./build.sh
 ```
 
 ## Windows - tested with MSVC
