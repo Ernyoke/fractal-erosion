@@ -16,7 +16,6 @@
 #include "Camera.h"
 #include "DiamondSquareFractal.h"
 #include "Terrain.h"
-#include "Renderer.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "Light.h"
@@ -56,7 +55,6 @@ private:
     std::unique_ptr<Terrain> terrain;
     std::unique_ptr<ShaderProgram> shader_program;
     Light directional_light;
-    Renderer renderer;
 
     std::unique_ptr<DiamondSquareFractal> fractal;
 

@@ -1,10 +1,10 @@
 #include "Display.h"
 #include "Material.h"
+#include "Renderer.h"
 
 #include <iostream>
 #include <future>
 #include <cmath>
-#include <filesystem>
 
 #include <cmrc/cmrc.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -104,12 +104,12 @@ void Display::update() {
     delta_time = now - last_time_stamp;
     last_time_stamp = now;
 
-    renderer.clear();
+    Renderer::clear();
     shader_program->setUniformMat4f("u_Model", terrain->getModelMatrix());
     shader_program->setUniformMat4f("u_View", camera.calculateViewMatrix());
     shader_program->setUniformMat4f("u_Projection", projection_matrix);
     shader_program->setUniform3f("u_EyePosition", camera.getPosition());
-    renderer.draw(terrain, shader_program);
+    Renderer::draw(terrain, shader_program);
 
     handleKeyboardInputs();
     camera.update();

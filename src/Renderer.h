@@ -6,13 +6,13 @@
 
 class Renderer {
 public:
-    Renderer();
+    Renderer() = delete;
 
     Renderer(const Renderer &renderer) = delete;
 
     Renderer &operator=(const Renderer &renderer) = delete;
 
-    virtual ~Renderer();
+    virtual ~Renderer() = delete;
 
     static void clear() ;
 

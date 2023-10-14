@@ -2,7 +2,6 @@
 
 #include "ErrorHandler.h"
 
-#include <fstream>
 #include <string>
 #include <sstream>
 #include <utility>
@@ -18,7 +17,7 @@ Shader::Shader(std::string source, unsigned int shader_type)
 void Shader::compileShader() {
     renderer_id = glCreateShader(shader_type);
     const char *src = source.c_str();
-    glCall(glShaderSource(renderer_id, 1, &src, nullptr));
+    glCall(glShaderSource(renderer_id, 1, &src, nullptr))
     glCall(glCompileShader(renderer_id));
     int result;
     glCall(glGetShaderiv(renderer_id, GL_COMPILE_STATUS, &result));
